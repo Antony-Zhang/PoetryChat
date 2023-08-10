@@ -4,5 +4,7 @@
 ## 依赖
 - Python-3.9
 ### Conda
-- langchain-0.0.239
 - websocket-client-0.58.0
+#### conda-forge
+- langchain-0.0.239
+- gradio-3.23.0

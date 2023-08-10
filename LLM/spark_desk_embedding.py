@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# @Time : 2023/7/3 15:41
-# @Author : Fishead_East
-# @Email : ytzd2696@foxmail.com
-# @File : spark_desk_embedding.py
-# @Project : PromptArt
 import os
 import json
 import requests
