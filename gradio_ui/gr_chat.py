@@ -8,10 +8,11 @@ import gradio as gr
 from chat_poets.chat import gen_response
 
 
-def chat_poetry(pattern: str):
+def chat_poetry(tab: gr.Tab):
     """
     交互UI与逻辑的实现
     """
+    pattern = gr.Markdown(f"{tab.id}")
     with gr.Row():
         # 历史记录 todo
         with gr.Column(scale=2):
@@ -21,7 +22,7 @@ def chat_poetry(pattern: str):
         with gr.Column(scale=8):
             gr.Markdown("## 交互界面")
             # 聊天
-            bot = gr.Chatbot(value=[], label="古诗学习助手", elem_id="chatbot").style(height=400)
+            bot = gr.Chatbot(value=[], label="古诗学习助手", elem_id=f"{tab.id}_chatbot").style(height=400)
             # 输入框
             with gr.Row():
                 textbox = gr.Textbox(
@@ -34,7 +35,7 @@ def chat_poetry(pattern: str):
     """模块功能"""
     # 输入框 提交
     textbox.submit(fn=chat_user, inputs=[textbox, bot], outputs=[textbox, bot, chat_history]) \
-        .then(fn=chat_respond, inputs=bot, outputs=[bot, chat_history])
+        .then(fn=chat_respond, inputs=[bot, pattern], outputs=[bot, chat_history])
     # 按钮 刷新
     components = [bot, textbox, chat_history]  # 待刷新的组件
     clear_values = json.dumps(
@@ -66,12 +67,12 @@ def chat_user(user_message, history):
     return "", history, history
 
 
-def chat_respond(history):
+def chat_respond(history: list[list], pattern: str):
     """
     单次对话中，在调用chat_user后调用，实现流式输出
     """
-    # 调用功能函数，获取助手的回答 todo
-    bot_message = gen_response(history)
+    # 调用功能函数，获取助手的回答
+    bot_message = gen_response(pattern=pattern, history=history)
 
     history[-1][1] = ""  # 下标-1表示最后一个
     for char in bot_message:

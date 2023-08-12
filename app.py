@@ -11,12 +11,12 @@ with gr.Blocks() as demo:
     with gr.Row():
         # 聊天交互
         with gr.Column(scale=7):
-            with gr.Tab("成人模式"):
-                chat_poetry("成人模式")
-            with gr.Tab("青少年模式"):
-                chat_poetry("青少年模式")
-            with gr.Tab("儿童模式"):
-                chat_poetry("儿童模式")
+            with gr.Tab(label="成人模式", id="adult") as AdultTab:
+                chat_poetry(AdultTab)
+            with gr.Tab(label="青少年模式", id="teen") as TeenTab:
+                chat_poetry(TeenTab)
+            with gr.Tab(label="儿童模式", id="child") as ChildTab:
+                chat_poetry(ChildTab)
 
         # 文生图
         with gr.Column(scale=3):
