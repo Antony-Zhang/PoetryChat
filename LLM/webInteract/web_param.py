@@ -1,12 +1,6 @@
 """
     交互的参数模块
 """
-# -*- coding: utf-8 -*-
-# @Time : 2023/7/4 09:35
-# @Author : Fishead_East
-# @Email : ytzd2696@foxmail.com
-# @File : web_param.py
-# @Project : PromptArt
 import _thread as thread
 import base64
 import datetime
