@@ -33,7 +33,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 ## 本地依赖
 - Python-3.9
 
-### (1) Pip
+### (1) Pip ✅
 - websocket-client
 - langchain
 - gradio
@@ -43,6 +43,3 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 #### conda-forge
 - langchain-0.0.239
 - gradio-3.23.0
-
-# 配置
-
