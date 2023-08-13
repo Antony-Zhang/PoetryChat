@@ -31,6 +31,9 @@ with gr.Blocks() as demo:
         image_button.click(None, inputs=txt_img, outputs=image_out)  # 生图函数待填充 todo
 
 
+demo.queue()
+demo.launch()
+
 if __name__ == '__main__':
     demo.queue()
     demo.launch()
