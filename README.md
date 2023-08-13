@@ -32,7 +32,13 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ## 本地依赖
 - Python-3.9
-### Conda
+
+### (1) Pip
+- websocket-client
+- langchain
+- gradio
+
+### (2) Conda
 - websocket-client-0.58.0
 #### conda-forge
 - langchain-0.0.239
