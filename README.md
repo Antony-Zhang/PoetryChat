@@ -37,6 +37,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - websocket-client
 - langchain
 - gradio-3.23.0
+- bs4
 
 ### (2) Conda
 - websocket-client-0.58.0
