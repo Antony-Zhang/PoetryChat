@@ -2,6 +2,9 @@
     使用LangChain自定义LLM
 """
 import os
+from dotenv import find_dotenv, load_dotenv
+
+
 from typing import Optional, List, Mapping, Any
 import ssl
 
@@ -26,6 +29,7 @@ class SparkDesk(LLM):
     """
 
     url = "wss://spark-api.xf-yun.com/v1.1/chat"
+    load_dotenv(find_dotenv('.env'))
     APPID = os.getenv("APPID")      # 环境变量
     APIKey = os.getenv("APIKEY")
     APISecret = os.getenv("APISECRET")

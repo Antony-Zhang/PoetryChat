@@ -21,12 +21,15 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ### 开发模块
 - chat_poets： 与星火交互，得出回答的模块
+  - prompts： Prompts提示词文件夹
 - gradio_ui： 使用gradio搭建demo的模块
 - txt2img： 文生图的模块
 
 ### 其他
 - LLM： 与星火交互的功能封装
-- prompts： Prompts提示词文件夹
+- requirement.txt：依赖包列表
+- .gitattributes：hf配置
+- .env：环境变量文件，存储星火api访问信息
 
 ---
 
@@ -34,10 +37,12 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - Python-3.9
 
 ### (1) Pip ✅
+*注意新的依赖要同步更新requirement.txt文件*
 - websocket-client
 - langchain
 - gradio-3.23.0
 - bs4
+- python-dotenv
 
 ### (2) Conda
 - websocket-client-0.58.0
