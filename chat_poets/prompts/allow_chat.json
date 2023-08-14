@@ -1,0 +1,5 @@
+{
+  "_type": "prompt",
+  "input_variables": ["user_message"],
+  "template": "请分析问题中是否提到了诗人或古诗。如果是则输出1，否则输出0；不输出除结果外的其他内容。问题如下->{user_message}"
+}

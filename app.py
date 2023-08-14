@@ -28,7 +28,7 @@ with gr.Blocks() as demo:
             ).style(container=False)
 
             image_button = gr.Button("点击生图")
-        image_button.click(None, inputs=txt_img, outputs=image_out)  # 生图函数待填充 todo
+        image_button.click(None, inputs=txt_img, outputs=image_out)  # todo 生图函数待填充
 
 
 demo.queue()

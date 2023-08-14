@@ -15,7 +15,7 @@ def chat_poetry(tab: gr.Tab):
     pattern = gr.Markdown(f"{tab.id}")
     action = gr.State(value=False)  # 指示有效对话是否开始（开始时用户未提及古诗诗人则未进入）
     with gr.Row():
-        # 历史记录 todo
+        # todo 历史记录
         with gr.Column(scale=2):
             gr.Markdown("## 历史记录")
             chat_history = gr.State([[]])  # 存储单次聊天记录的组件
@@ -54,7 +54,7 @@ def newchat(chat_history: list[list]):
     print("#########")
     for chat_list in chat_history:
         print(f"##用户：{chat_list[0]} ## Bot：{chat_list[1]}")
-    # 将已有聊天记录存入历史记录 todo
+    # todo 将已有聊天记录存入历史记录
 
     # 刷新聊天记录
     return [None, None, None]
