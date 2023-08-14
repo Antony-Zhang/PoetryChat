@@ -16,9 +16,9 @@ class SparkDeskEmbedding(object):
     讯飞星火的Embedding模型
     """
     url = r'https://knowledge-retrieval.cn-huabei-1.xf-yun.com/v1/aiui/embedding/query'
-    APPID: str = os.getenv("APPID")
-    APIKey: str = os.getenv("APIKEY")
-    APISecret: str = os.getenv("APISECRET")
+    APPID: str = "c96bdfdd"
+    APIKey: str = "e0799f95d4cd84750874060b892943e0"
+    APISecret: str = "M2Q3ZjllY2JlODE2MzlmNGYyYjVkZGRm"
 
     def _get_param(self, text) -> Mapping[str, Any]:
         """
@@ -31,12 +31,12 @@ class SparkDeskEmbedding(object):
                 'app_id': self.APPID
             },
             'payload': {
-                'text': text
+                'text': text  # 待向量化的文本内容，不超过256个字符，超过会只截取前256个字符进行向量化
             }
         }
         return param_dict
 
-    def embed_query(self, text: str,) -> List[float]:
+    def embed_query(self, text: str, ) -> List[float]:
         """Compute query embeddings using the Spark Desk Model.
 
         Args:
@@ -48,7 +48,7 @@ class SparkDeskEmbedding(object):
         ws_param = WsParamEmb(self.url, self.APPID, self.APIKey, self.APISecret)
         wsUrl = ws_param.create_url()
         param_dict = self._get_param(text)
-        response = requests.post(url=wsUrl, json=param_dict)    # 得到响应串
+        response = requests.post(url=wsUrl, json=param_dict)  # 得到响应串
         result_dict = json.loads(response.content.decode('utf-8'))
         embed = json.loads(result_dict['payload']['text']['vector'])
         return embed
@@ -56,11 +56,10 @@ class SparkDeskEmbedding(object):
 
 if __name__ == '__main__':
     llm_embed = SparkDeskEmbedding()
-    embed1 = llm_embed.embed_query("你好吗？")
+    embed1 = llm_embed.embed_query("你好吗")
     print(embed1)
     print(len(embed1))
     print(embed1[:5])
-
 
 # class SparkDeskEmbeddings(HuggingFaceEmbeddings):
 #     """重写HuggingFaceEmbeddings加载类"""
