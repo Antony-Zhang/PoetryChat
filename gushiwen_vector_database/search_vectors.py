@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 
 # Based on: 
 # 代码注释使用中文 - 英文
@@ -17,10 +17,12 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 
+
 # 读取本地数据库 - Read the local database
 def read_local_vectors():
     vectors = torch.load('./local_vectors/vectors.pt')
     return vectors
+
 
 # 将输入文本转化为向量并与数据库中的向量进行比较 - Convert the input text into a vector and compare it with the vector in the database
 # 输出相似度最高的前n个文本的序号 - Output the serial number of the top 5 texts with the highest similarity
@@ -29,7 +31,7 @@ def get_domain_knowledge(text, n, threshold=0.2):
     # text: 输入文本 - Input text
     # n: 输出相似度最高的前n个文本的序号 - Output the serial number of the top 5 texts with the highest similarity
     # threshold: 概率阈值，小于该阈值的知识将被忽略 - Probability threshold, texts with probability less than this threshold will be ignored
-    
+
     # 读取数据库中的向量 - Read the vector in the database
     vectors = read_local_vectors()
     # 将输入文本转化为向量 - Convert the input text into a vector
@@ -50,7 +52,7 @@ def get_domain_knowledge(text, n, threshold=0.2):
         # 取出相似度最高的前n个文本的序号 - Take out the serial number of the top n texts with the highest similarity
         knowledges_ids = similarity_sorted[:n].tolist()
         # 读取知识库 - Read the knowledge base
-        knowledges = json.load(open('gushiwen.json','r', encoding='utf8').readlines())
+        knowledges = json.load(open('gushiwen.json', 'r', encoding='utf8').readlines())
         # 去除概率小于阈值的知识 - Remove knowledge with probability less than threshold
         knowledges_ids = [i for i in knowledges_ids if similarity[0][i] > threshold]
         # 直接输出资料文本 - directly output the text

@@ -8,7 +8,7 @@ url = "https://so.gushiwen.cn"
 
 def search_poem(poem: str) -> Optional[dict[Any, Any]]:
     """
-    实时Web检索古诗(第一首)
+    实时Web检索古诗(选取检索出来的第一首)
     :param poem: 诗句
     :return: 古诗信息的字典["title", "author", "contents", "trans"]
     """

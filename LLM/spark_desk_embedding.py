@@ -3,11 +3,6 @@ import json
 import requests
 from typing import Optional, List, Mapping, Any
 
-from langchain.llms.base import LLM
-from langchain.callbacks.manager import CallbackManagerForLLMRun
-from langchain.embeddings.base import Embeddings
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-
 from LLM.webInteract.web_param import WsParamEmb
 
 
@@ -49,9 +44,9 @@ class SparkDeskEmbedding(object):
         wsUrl = ws_param.create_url()
         param_dict = self._get_param(text)
         response = requests.post(url=wsUrl, json=param_dict)    # 得到响应串
-        result_dict = json.loads(response.content.decode('utf-8'))
-        embed = json.loads(result_dict['payload']['text']['vector'])
-        return embed
+        result = json.loads(response.content.decode('utf-8'))
+        # embed = json.loads(result_dict['payload']['text']['vector'])
+        return result
 
 
 if __name__ == '__main__':
@@ -60,27 +55,3 @@ if __name__ == '__main__':
     print(embed1)
     print(len(embed1))
     print(embed1[:5])
-
-
-# class SparkDeskEmbeddings(HuggingFaceEmbeddings):
-#     """重写HuggingFaceEmbeddings加载类"""
-#
-#     client: Any  #: :meta private:
-#     model_name: str = "SparkDeskEmbeddings"
-#
-#     def __init__(self, **kwargs: Any):
-#         super().__init__(**kwargs)
-#         # self.client即向量化工具，为sentence_transformers包中的类
-#
-#     def embed_query(self, text: str) -> List[float]:
-#         """Compute query embeddings using a HuggingFace transformer model.
-#
-#         Args:
-#             text: The text to embed.
-#
-#         Returns:
-#             Embeddings for the text.
-#         """
-#         text = text.replace("\n", " ")
-#         embedding = self.client.encode(text, normalize_embeddings=True)
-#         return embedding.tolist()
