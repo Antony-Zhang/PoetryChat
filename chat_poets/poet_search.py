@@ -35,23 +35,27 @@ def search_poem(poem: str) -> Optional[dict[Any, Any]]:
     author = soup_poetry.find("p", class_="source").text.strip()  # 作者
     contents = soup_poetry.find("div", class_="contson").text.strip()  # 原文
 
-    exp_html_href = soup_poetry.find("div", id=re.compile(r'fanyi+\d'))\
-        .find('a', style=re.compile(r'^text-decoration:none')).get("href")
-    # 针对“点击展开”组件
-    if exp_html_href:  # 存在则获取对应资源href,拼接成url
-        exp_html_href_id = re.match(r"javascript:.*?,'(.*?)'.*?", str(exp_html_href)).group(1)
-        exp_html_href_url = 'https://so.gushiwen.cn/nocdn/ajaxfanyi.aspx?id=' + exp_html_href_id
-        exp_html = requests.get(url=exp_html_href_url)
-        exp_html.encoding = "utf-8"
-        exp_poetry = BS(exp_html.text, features="html.parser")
-        # 提取元素数据
-        trans_notes = exp_poetry.find("div", class_="contyishang").find_all('p')
-        trans = trans_notes[0].text.strip().lstrip("译文")
-        notes = trans_notes[1].text.strip().lstrip("注释").rstrip("▲")
-    else:
-        trans_notes = soup_poetry.find("div", id=re.compile(r'fanyi+\d')).find_all('p')
-        trans = trans_notes[0].text.strip().lstrip("译文")
-        notes = trans_notes[1].text.strip().lstrip("注释")
+    try:
+        exp_html_href = soup_poetry.find("div", id=re.compile(r'fanyi+\d'))\
+            .find('a', style=re.compile(r'^text-decoration:none')).get("href")
+        # 针对“点击展开”组件
+        if exp_html_href:  # 存在则获取对应资源href,拼接成url
+            exp_html_href_id = re.match(r"javascript:.*?,'(.*?)'.*?", str(exp_html_href)).group(1)
+            exp_html_href_url = 'https://so.gushiwen.cn/nocdn/ajaxfanyi.aspx?id=' + exp_html_href_id
+            exp_html = requests.get(url=exp_html_href_url)
+            exp_html.encoding = "utf-8"
+            exp_poetry = BS(exp_html.text, features="html.parser")
+            # 提取元素数据
+            trans_notes = exp_poetry.find("div", class_="contyishang").find_all('p')
+            trans = trans_notes[0].text.strip().lstrip("译文")
+            notes = trans_notes[1].text.strip().lstrip("注释").rstrip("▲")
+        else:
+            trans_notes = soup_poetry.find("div", id=re.compile(r'fanyi+\d')).find_all('p')
+            trans = trans_notes[0].text.strip().lstrip("译文")
+            notes = trans_notes[1].text.strip().lstrip("注释")
+    except:
+        trans = ""
+        notes = ""
 
     # 结果转化为dict
     keys = ["title", "author", "contents", "trans", "notes"]
@@ -62,7 +66,7 @@ def search_poem(poem: str) -> Optional[dict[Any, Any]]:
 
 
 if __name__ == '__main__':
-    poetry_dict = search_poem("金风细细。叶叶梧桐坠。")
+    poetry_dict = search_poem("我曾凌风登此楼，但见苍茫汉阳树。")
     # 打印
     for key, value in poetry_dict.items():
         print(key + ": " + value)

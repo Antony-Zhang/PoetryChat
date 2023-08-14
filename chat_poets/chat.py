@@ -68,6 +68,7 @@ class ChatPoet:
     def chat_teen(cls, question_type: str, history: list[list]) -> str:
         """
         青少年模式
+        :param question_type:
         :param history: 对话记录，最后一项是[Question, ]，即答案待给出
         :return: 给出答案
         """
@@ -78,6 +79,7 @@ class ChatPoet:
     def chat_child(cls, question_type: str, history: list[list]) -> str:
         """
         儿童模式
+        :param question_type:
         :param history: 对话记录，最后一项是[Question, ]，即答案待给出
         :return: 给出答案
         """
