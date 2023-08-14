@@ -5,7 +5,7 @@ import time
 import json
 import gradio as gr
 
-from chat_poets.chat import gen_response
+from chat_poets.chat import gen_response, allow_chat
 
 
 def chat_poetry(tab: gr.Tab):
@@ -13,6 +13,7 @@ def chat_poetry(tab: gr.Tab):
     交互UI与逻辑的实现
     """
     pattern = gr.Markdown(f"{tab.id}")
+    action = gr.State(value=False)  # 指示有效对话是否开始（开始时用户未提及古诗诗人则未进入）
     with gr.Row():
         # 历史记录 todo
         with gr.Column(scale=2):
@@ -22,7 +23,8 @@ def chat_poetry(tab: gr.Tab):
         with gr.Column(scale=8):
             gr.Markdown("## 交互界面")
             # 聊天
-            bot = gr.Chatbot(value=[], label="古诗学习助手", elem_id=f"{tab.id}_chatbot").style(height=400)
+            bot = gr.Chatbot(value=[(None, "今天想学哪首古诗？或是想了解哪位诗人呢？")], label="古诗学习助手",
+                             elem_id=f"{tab.id}_chatbot").style(height=400)
             # 输入框
             with gr.Row():
                 textbox = gr.Textbox(
@@ -34,8 +36,8 @@ def chat_poetry(tab: gr.Tab):
 
     """模块功能"""
     # 输入框 提交
-    textbox.submit(fn=chat_user, inputs=[textbox, bot], outputs=[textbox, bot, chat_history]) \
-        .then(fn=chat_respond, inputs=[bot, pattern], outputs=[bot, chat_history])
+    textbox.submit(fn=chat_user, inputs=[textbox, bot, action], outputs=[textbox, bot, chat_history, action]) \
+        .then(fn=chat_respond, inputs=[bot, pattern, action], outputs=[bot, chat_history])
     # 按钮 刷新
     components = [bot, textbox, chat_history]  # 待刷新的组件
     clear_values = json.dumps(
@@ -58,21 +60,29 @@ def newchat(chat_history: list[list]):
     return [None, None, None]
 
 
-def chat_user(user_message, history):
+def chat_user(user_message: str, history: list[list], action: bool):
     """
     单次对话中，首先调用的函数
     """
+    if action is True or allow_chat(user_message):
+        allowed = True
+    else:
+        allowed = False
+
     history += [[user_message, None]]
     # 输出调试
-    return "", history, history
+    return "", history, history, allowed
 
 
-def chat_respond(history: list[list], pattern: str):
+def chat_respond(history: list[list], pattern: str, action: bool):
     """
     单次对话中，在调用chat_user后调用，实现流式输出
     """
-    # 调用功能函数，获取助手的回答
-    bot_message = gen_response(pattern=pattern, history=history)
+    if action is False:
+        bot_message = "您似乎没有提到诗人或古诗，请再试试~"
+    else:
+        # 调用功能函数，获取助手的回答
+        bot_message = gen_response(pattern=pattern, history=history)
 
     history[-1][1] = ""  # 下标-1表示最后一个
     for char in bot_message:
