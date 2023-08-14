@@ -1,9 +1,3 @@
-# # -*- coding: utf-8 -*-
-# # @Time : 2023/6/28 16:08
-# # @Author : Fishead_East
-# # @Email : ytzd2696@foxmail.com
-# # @File : spark_desk.py
-# # @Project : PromptArt
 """
     使用LangChain自定义LLM
 """
