@@ -17,25 +17,39 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ---
 
+## 调试说明
+
+在**app.py**文件下，运行main函数，待终端输出本地网址后双击打开，在弹出的窗口进行交互调试。
+
 ## 结构说明
 
 ### 开发模块
-- chat_poets： 与星火交互，得出回答的模块
-- gradio_ui： 使用gradio搭建demo的模块
-- txt2img： 文生图的模块
+🌟表示核心模块，🌛表示尚未使用或计划优化的模块
+- chat_poets 
+  - prompts.json：🌟所有的Prompts提示词
+  - get_path.py：🌟根据系统环境，获取json文件的绝对路径以供访问
+  - poet_search：实时检索古诗信息（古诗文网）
+- gradio_ui
+  - gr_chat：🌟使用gradio搭建demo的模块
+- gushiwen_vector_database：🌛向量知识库【已跑通验证，需要进一步处理】
+  - gushiwen.json 古诗文数据
+  - search_vectors.py：计算向量并获得相似文本
+  - local_vectors：向量化的数据文件
+  - embedding_model：下载的模型【未附上】
+- txt2img：🌛文生图的模块
 
 ### 其他
 - LLM： 与星火交互的功能封装
 - requirement.txt：依赖包列表
 - .gitattributes：hf配置
-- .env：环境变量文件，存储星火api访问信息
+- .env：环境变量文件，存储星火api访问信息⚠️注意不要上传具体值
 
 ---
 
 ## 本地依赖
 - Python-3.9
 
-### (1) Pip ✅
+### Pip ✅
 *注意新的依赖要同步更新requirement.txt文件*
 - websocket-client
 - langchain
@@ -43,8 +57,3 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - bs4
 - python-dotenv
 
-### (2) Conda
-- websocket-client-0.58.0
-#### conda-forge
-- langchain-0.0.239
-- gradio-3.23.0

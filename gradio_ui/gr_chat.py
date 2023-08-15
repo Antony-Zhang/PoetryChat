@@ -1,6 +1,7 @@
 """
 助手交互所需函数
 """
+import re
 import time
 import json
 import gradio as gr
@@ -54,6 +55,8 @@ def newchat(chat_history: list[list]):
     print("#########")
     for chat_list in chat_history:
         print(f"##用户：{chat_list[0]} ## Bot：{chat_list[1]}")
+
+    ChatPoet.stop_chat()
     # todo 将已有聊天记录存入历史记录
 
     # 刷新聊天记录
@@ -64,7 +67,11 @@ def chat_user(user_message: str, history: list[list], action: bool):
     """
     单次对话中，首先调用的函数
     """
-    if action is True or ChatPoet.allow_chat(user_message):
+    print("调用chat_user")
+    ChatPoet.allow_chat(user_message=history[-1][0])
+    if (action is True) or (ChatPoet.res_dict != {}) and (ChatPoet.res_dict["exist"]):
+        print(f"action is True: {action is True}")
+        print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {}}")
         allowed = True
     else:
         allowed = False
@@ -78,11 +85,13 @@ def chat_respond(history: list[list], pattern: str, action: bool):
     """
     单次对话中，在调用chat_user后调用，实现流式输出
     """
+    print("调用chat_respond")
     if action is False:
         bot_message = "您似乎没有提到诗人或古诗，请再试试~"
     else:
         # 调用功能函数，获取助手的回答
-        bot_message = ChatPoet.gen_response(mode=pattern, history=history)
+        pattern_str = re.sub(r'\n', "", re.sub(r'<[^>]+>', "", pattern))
+        bot_message = ChatPoet.gen_response(pattern=pattern_str, history=history)
 
     history[-1][1] = ""  # 下标-1表示最后一个
     for char in bot_message:
