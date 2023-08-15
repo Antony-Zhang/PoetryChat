@@ -52,18 +52,22 @@ def get_domain_knowledge(text, n, threshold=0.2):
         # 取出相似度最高的前n个文本的序号 - Take out the serial number of the top n texts with the highest similarity
         knowledges_ids = similarity_sorted[:n].tolist()
         # 读取知识库 - Read the knowledge base
-        knowledges = json.load(open('gushiwen.json', 'r', encoding='utf8').readlines())
-        # 去除概率小于阈值的知识 - Remove knowledge with probability less than threshold
-        knowledges_ids = [i for i in knowledges_ids if similarity[0][i] > threshold]
-        # 直接输出资料文本 - directly output the text
-        knowledges = [str(knowledge) for knowledge in knowledges]
-        # 取出相似度最高的前n个文本 - Take out the top n texts with the highest similarity
-        knowledges = [knowledges[i] for i in knowledges_ids]
+        with open('gushiwen.json', 'r', encoding='utf8') as file:
+            file_content = file.read()
+            knowledges = json.loads(file_content)
+
+            # 去除概率小于阈值的知识 - Remove knowledge with probability less than threshold
+            knowledges_ids = [i for i in knowledges_ids if similarity[0][i] > threshold]
+            # 直接输出资料文本 - directly output the text
+            knowledges = [str(knowledge) for knowledge in knowledges]
+            # 取出相似度最高的前n个文本 - Take out the top n texts with the highest similarity
+            knowledges = [knowledges[i] for i in knowledges_ids]
         return knowledges
     return ''
 
+
 # sample:
-# if __name__ == '__main__':
-#     input_text = '这是一条测试样本'
-#     knowledges = get_domain_knowledge(input_text, 5)
-#     print(knowledges, len(knowledges))
+if __name__ == '__main__':
+    input_text = '李白的诗歌'
+    knowledges = get_domain_knowledge(input_text, 5)
+    print(knowledges, len(knowledges))

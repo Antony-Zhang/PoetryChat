@@ -13,8 +13,8 @@ from transformers import AutoTokenizer, AutoModel
 import json
 
 # 加载模型 - Load model
-tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-mpnet-base-v2", cache_dir='embedding_model', model_max_length=512)
-model = AutoModel.from_pretrained("sentence-transformers/all-mpnet-base-v2e", cache_dir='embedding_model')
+tokenizer = AutoTokenizer.from_pretrained("./embedding_model/models--sentence-transformers--all-mpnet-base-v2/snapshots/bd44305fd6a1b43c16baf96765e2ecb20bca8e1d")
+model = AutoModel.from_pretrained("./embedding_model/models--sentence-transformers--all-mpnet-base-v2/snapshots/bd44305fd6a1b43c16baf96765e2ecb20bca8e1d")
 
 # 平均池化 - Average pooling
 def mean_pooling(model_output, attention_mask):
