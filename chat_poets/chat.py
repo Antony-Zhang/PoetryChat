@@ -29,14 +29,21 @@ class ChatPoet:
                 response = chain_allow.run(user_message)
 
     @classmethod
-    def get_question_type(cls, history: list[list]) -> str:
+    def get_question_type(cls, user_message: str) -> str:
         """
         返回问题类型字符串
-        :param history:
+        :param user_message:
         :return:
         """
+        prompt_question_type = PromptTemplate(
+            input_variables=["user_message"],
+            template="你是一个古诗老师，需要对问题进行分类。问题的类型有：1.诗词原文(content) 2.诗词白话文翻译(translation) 3.诗词鉴赏(appreciation) 4.词语解释(explaining) 5.写作背景(background) 6.作者简介（author）。请分析出问题的类型，并返回对应的类型英文。注意只输出给出的类型英文，不要自己翻译，不要输出其他内容。问题如下->{user_message}"
+        )
+        chain_question_type = LLMChain(llm=cls.llm, prompt=prompt_question_type)
+        response = chain_question_type.run(user_message)
+        print(f"question_type: {response}")
 
-        return "我是问题类型"
+        return response
 
     @classmethod
     def gen_response(cls, pattern: str, history: list[list]) -> str:
@@ -45,7 +52,7 @@ class ChatPoet:
         pattern = "adult" | "teen" | "child"，模式
         注：对话历史的最后一项是需要填充的内容，即history[-1] = [Question, ]；Question为用户刚提出的问题，尚未回答
         """
-        question_type = cls.get_question_type(history)
+        question_type = cls.get_question_type(history[-1][0])
         if pattern == "adult":
             return cls.chat_adult(question_type, history)
         elif pattern == "teen":
@@ -85,3 +92,7 @@ class ChatPoet:
         """
 
         return "儿童模式回答"
+
+
+if __name__ == '__main__':
+    print(ChatPoet.get_question_type("静夜思这首诗的中心情感是什么？"))
