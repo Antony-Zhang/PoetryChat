@@ -15,7 +15,12 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 ## 简介
 面向多年龄段的交互式古诗学习助手，基于讯飞星火大模型（SparkDesk）API开发
 
----
+--- 
+
+- [ ] Prompt进一步开发“词语解释”
+- [ ] 向量数据进一步处理，削减信息长度
+- [ ] 尝试使用HuggingFace的模型API部署，而不是本地模型
+- [ ] 文生图
 
 ## 调试说明
 
@@ -50,7 +55,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - Python-3.9
 
 ### Pip ✅
-*注意新的依赖要同步更新requirement.txt文件*
+> 注意新的依赖要同步更新requirement.txt文件
 - websocket-client
 - langchain
 - gradio-3.23.0
