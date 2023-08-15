@@ -21,7 +21,6 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ### 开发模块
 - chat_poets： 与星火交互，得出回答的模块
-  - prompts： Prompts提示词文件夹
 - gradio_ui： 使用gradio搭建demo的模块
 - txt2img： 文生图的模块
 

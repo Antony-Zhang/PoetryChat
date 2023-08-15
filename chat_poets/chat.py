@@ -14,7 +14,8 @@ from chat_poets.get_path import get_prompts_path
 class ChatPoet:
     llm = SparkDesk()
     # 记录所有Prompts的文件
-    prompts = json.loads(get_prompts_path("prompts.json"))
+    with open(get_prompts_path("prompts.json")) as f:
+        prompts = json.load(f)
 
     @classmethod
     def allow_chat(cls, user_message: str) -> bool:
@@ -40,9 +41,9 @@ class ChatPoet:
         :param user_message:
         :return:
         """
-        prompt_question_type = load_prompt("chat_poets/prompts/question_type.json")
-        chain_question_type = LLMChain(llm=cls.llm, prompt=prompt_question_type)
-        response = chain_question_type.run(user_message)
+
+        prompt_question_type = cls.prompts["get_question_type"].format(user_message=user_message)
+        response = cls.llm(prompt_question_type)
         print(f"response: {response}")
 
         return response
@@ -178,9 +179,4 @@ class ChatPoet:
 
 
 if __name__ == '__main__':
-    print(os.path.abspath("../"))
-    curPath = os.path.abspath(os.path.dirname(__file__))
-    print(curPath)
-    rootPath = curPath[:curPath.find("PoetryChat/") + len("PoetryChat/")]
-    print(rootPath)
-    # ChatPoet.get_question_type("静夜思这首诗的内容是什么？")
+    ChatPoet.get_question_type("静夜思这首诗的内容是什么？")
