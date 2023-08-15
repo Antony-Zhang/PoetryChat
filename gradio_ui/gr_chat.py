@@ -82,7 +82,7 @@ def chat_respond(history: list[list], pattern: str, action: bool):
         bot_message = "您似乎没有提到诗人或古诗，请再试试~"
     else:
         # 调用功能函数，获取助手的回答
-        bot_message = ChatPoet.gen_response(pattern=pattern, history=history)
+        bot_message = ChatPoet.gen_response(mode=pattern, history=history)
 
     history[-1][1] = ""  # 下标-1表示最后一个
     for char in bot_message:
