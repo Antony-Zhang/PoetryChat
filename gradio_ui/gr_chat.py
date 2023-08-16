@@ -53,14 +53,14 @@ def newchat(chat_history: list[list]):
     """
     # 输出调试
     print("#########")
-    for chat_list in chat_history:
-        print(f"##用户：{chat_list[0]} ## Bot：{chat_list[1]}")
-
+    if len(chat_history) > 1:
+        for chat_list in chat_history:
+            print(f"##用户：{chat_list[0]} ## Bot：{chat_list[1]}")
     ChatPoet.stop_chat()
     # todo 将已有聊天记录存入历史记录
 
     # 刷新聊天记录
-    return [None, None, None]
+    return [[(None, "今天想学哪首古诗？或是想了解哪位诗人呢？")], None, []]
 
 
 def chat_user(user_message: str, history: list[list], action: bool):
