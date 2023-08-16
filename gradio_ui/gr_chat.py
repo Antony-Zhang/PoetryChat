@@ -68,13 +68,13 @@ def chat_user(user_message: str, history: list[list], action: bool):
     单次对话中，首先调用的函数
     """
     print("调用chat_user")
-    ChatPoet.allow_chat(user_message=history[-1][0])
-    if (action is True) or (ChatPoet.res_dict != {}) and (ChatPoet.res_dict["exist"]):
-        print(f"action is True: {action is True}")
-        print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {}}")
-        allowed = True
-    else:
-        allowed = False
+    allowed = False
+    if action is not True:
+        ChatPoet.allow_chat(user_message=user_message)
+        if (action is True) or (ChatPoet.res_dict != {}) and (ChatPoet.res_dict["exist"]):
+            print(f"action is True: {action is True}")
+            print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {}}")
+            allowed = True
 
     history += [[user_message, None]]
     # 输出调试

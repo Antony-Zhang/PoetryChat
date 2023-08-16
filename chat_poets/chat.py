@@ -35,7 +35,6 @@ class ChatPoet:
                 break
             except:
                 continue
-
         while True:
             try:
                 cls.res_dict["exist"] = int(cls.res_dict["exist"])
@@ -77,6 +76,7 @@ class ChatPoet:
         注：对话历史的最后一项是需要填充的内容，即history[-1] = [Question, ]；Question为用户刚提出的问题，尚未回答
         """
         limit_list = ["诗词原文", "诗词白话文翻译", "诗词鉴赏", "词语解释", "写作背景", "作者简介"]
+        time = 0
         while True:
             # 循环纠错，保证输出的问题类型在给定范围内
             question_type = cls.get_question_type(history[-1][0])
@@ -85,6 +85,9 @@ class ChatPoet:
                 break
             else:
                 print(f"错误的question_type:{question_type}")
+                time += 1
+                if time > 5:
+                    return "请求次数过多，请重试"
 
         if pattern == "adult":
             response = cls.chat_adult(question_type=question_type, history=history)
