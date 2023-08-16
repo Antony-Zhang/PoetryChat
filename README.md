@@ -25,6 +25,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 ## 调试说明
 
 在**app.py**文件下，运行main函数，待终端输出本地网址后双击打开，在弹出的窗口进行交互调试。
+> 注意修改 LLM/spark_desk.py中的环境变量获取方式
 
 ## 结构说明
 
