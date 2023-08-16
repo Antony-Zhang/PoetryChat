@@ -20,7 +20,7 @@ def get_prompts_path(filename: str) -> str:
         return rootPath + f"/chat_poets/{filename}"
     else:  # linux部署
         rootPath = curPath[:curPath.find("user") + len("user")]
-        return rootPath + f"/{filename}"
+        return rootPath + f"/chat_poets/{filename}"
 
 
 # if __name__ == '__main__':
