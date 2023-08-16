@@ -19,7 +19,7 @@ def get_prompts_path(filename: str) -> str:
         rootPath = curPath[:curPath.find("PoetryChat") + len("PoetryChat")]
         return rootPath + f"/chat_poets/{filename}"
     else:  # linux部署
-        rootPath = curPath[:curPath.find("user") + len("user")]
+        rootPath = curPath[:curPath.find("app") + len("app")]
         return rootPath + f"/chat_poets/{filename}"
 
 
