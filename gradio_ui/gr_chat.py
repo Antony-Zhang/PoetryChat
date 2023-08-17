@@ -68,9 +68,11 @@ def chat_user(user_message: str, history: list[list], action: bool):
     单次对话中，首先调用的函数
     """
     print("调用chat_user")
-    allowed = False
-    if action is not True:
+    if action is True:
+        allowed = True
+    else:
         ChatPoet.allow_chat(user_message=user_message)
+        allowed = False
         if (action is True) or (ChatPoet.res_dict != {}) and (ChatPoet.res_dict["exist"]):
             print(f"action is True: {action is True}")
             print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {}}")

@@ -90,8 +90,10 @@ class ChatPoet:
                     return "请求次数过多，请重试"
 
         if pattern == "adult":
+            print("成人模式")
             response = cls.chat_adult(question_type=question_type, history=history)
         else:
+            print("青少年或儿童模式")
             response = cls.chat_teen_or_child(pattern=pattern, question_type=question_type, history=history)
         print(f"response:{response}")
         return response
@@ -128,9 +130,9 @@ class ChatPoet:
             return cls.get_str_response_appreciate(history)
         elif question_type == "词语解释":
             return cls.get_str_response_vocab(history)
-        elif question_type == "写作背景":
-            return cls.get_str_response_author(history)
         elif question_type == "作者简介":
+            return cls.get_str_response_author(history)
+        elif question_type == "写作背景":
             return cls.get_str_response_background(history)
 
     @classmethod
@@ -144,21 +146,21 @@ class ChatPoet:
         """
         prompt_mode = cls.prompts["pattern"][pattern]
 
-        if question_type == "origin":
+        if question_type == "诗词原文":
             return cls.get_str_response_origin(history)
-        elif question_type == "vernacular":
+        elif question_type == "诗词白话文翻译":
             str_prompt_vernacular_s = prompt_mode + cls.get_str_response_vernacular(history)
             return cls.llm(str_prompt_vernacular_s)
-        elif question_type == "appreciate":
+        elif question_type == "诗词鉴赏":
             str_prompt_appreciate_s = prompt_mode + cls.get_str_response_appreciate(history)
             return cls.llm(str_prompt_appreciate_s)
-        elif question_type == "vocab":
+        elif question_type == "词语解释":
             str_prompt_vocab_s = prompt_mode + cls.get_str_response_vocab(history)
             return cls.llm(str_prompt_vocab_s)
-        elif question_type == "author":
+        elif question_type == "作者简介":
             str_prompt_author_s = prompt_mode + cls.get_str_response_author(history)
             return cls.llm(str_prompt_author_s)
-        elif question_type == "background":
+        elif question_type == "写作背景":
             str_prompt_background_s = prompt_mode + cls.get_str_response_background(history)
             return cls.llm(str_prompt_background_s)
 
