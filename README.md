@@ -15,7 +15,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 ## 简介
 面向多年龄段的交互式古诗学习助手，基于讯飞星火大模型（SparkDesk）API开发
 
---- 
+---
 
 - [ ] Prompt进一步开发“词语解释”
 - [ ] 向量数据进一步处理，削减信息长度
@@ -49,6 +49,12 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - requirement.txt：依赖包列表
 - .gitattributes：hf配置
 - .env：环境变量文件，存储星火api访问信息⚠️注意不要上传具体值
+- 古诗文外挂json数据库与已经训练好的pt权重
+  - [提取地址](https://pan.baidu.com/s/1n6x1gtNeS01bZh4_PYt4vg), 提取密码：h14p 
+  - 应放置位置：
+    - PoetryChat/gushiwen_vector_database/gushiwen.json
+    - PoetryChat/gushiwen_vector_database/local_vectors/data_and_vectors.pt
+
 
 ---
 
