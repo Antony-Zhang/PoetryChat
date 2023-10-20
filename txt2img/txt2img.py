@@ -17,6 +17,34 @@ from urllib.parse import urlparse, urlencode
 from dotenv import load_dotenv, find_dotenv
 
 
+# Authentication
+def assemble_auth_url(method, addr, apiKey, apiSecret):
+    if apiKey == "" and apiSecret == "":
+        return addr
+
+    url_parts = urlparse(addr)
+    date = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
+    sign_string = f'host: {url_parts.netloc}\ndate: {date}\n{method} {url_parts.path} HTTP/1.1'
+    sha = hmac_with_sha_to_base64("hmac-sha256", sign_string, apiSecret)
+    auth_url = f'api_key="{apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="{sha}"'
+    authorization = base64.b64encode(auth_url.encode()).decode()
+    query_params = urlencode({"host": url_parts.netloc, "date": date, "authorization": authorization})
+    auth_addr = f"{addr}?{query_params}"
+    return auth_addr
+
+
+def hmac_with_sha_to_base64(algorithm, data, key):
+    hmac_obj = hmac.new(key.encode(), data.encode(), hashlib.sha256)
+    return base64.b64encode(hmac_obj.digest()).decode()
+
+
+# HTTP Request
+def http_tool(method, auth_addr, data, timeout):
+    headers = {"content-type": "application/json;charset=UTF-8"}
+    response = requests.post(auth_addr, data=data, headers=headers, timeout=timeout / 1000)
+    return response.content, response.status_code
+
+
 def gen_img(txt):
     """
     生图功能函数，输入诗句文本返回图片
@@ -36,6 +64,7 @@ def gen_img(txt):
     picture_name = txt + time.strftime('_%Y_%m_%d_%H_%M_%S_GMT', time.gmtime()) + ".jpg"
     # 生成完整的图片文件路径
     image_file_path = os.path.join("generated_images", picture_name)
+    print(image_file_path)
 
     req = {
         "header": {
@@ -55,31 +84,6 @@ def gen_img(txt):
     }
 
     reqData = json.dumps(req)
-
-    # Authentication
-    def assemble_auth_url(method, addr, apiKey, apiSecret):
-        if apiKey == "" and apiSecret == "":
-            return addr
-
-        url_parts = urlparse(addr)
-        date = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
-        sign_string = f'host: {url_parts.netloc}\ndate: {date}\n{method} {url_parts.path} HTTP/1.1'
-        sha = hmac_with_sha_to_base64("hmac-sha256", sign_string, apiSecret)
-        auth_url = f'api_key="{apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="{sha}"'
-        authorization = base64.b64encode(auth_url.encode()).decode()
-        query_params = urlencode({"host": url_parts.netloc, "date": date, "authorization": authorization})
-        auth_addr = f"{addr}?{query_params}"
-        return auth_addr
-
-    def hmac_with_sha_to_base64(algorithm, data, key):
-        hmac_obj = hmac.new(key.encode(), data.encode(), hashlib.sha256)
-        return base64.b64encode(hmac_obj.digest()).decode()
-
-    # HTTP Request
-    def http_tool(method, auth_addr, data, timeout):
-        headers = {"content-type": "application/json;charset=UTF-8"}
-        response = requests.post(auth_addr, data=data, headers=headers, timeout=timeout / 1000)
-        return response.content, response.status_code
 
     # Main
     auth_addr = assemble_auth_url("POST", addr, apiKey, apiSecret)
