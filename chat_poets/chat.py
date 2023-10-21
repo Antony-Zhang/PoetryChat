@@ -9,13 +9,13 @@ from langchain.prompts import PromptTemplate, load_prompt
 from langchain.chains import LLMChain, SimpleSequentialChain
 
 from chat_poets.poet_web_search import search_poem
-from chat_poets.get_path import get_prompts_path
+from get_path import get_file_path
 
 
 class ChatPoet:
     llm = SparkDesk()
     # 记录所有Prompts的文件
-    with open(get_prompts_path("prompts.json")) as f:
+    with open(get_file_path("prompts.json", "prompts")) as f:
         prompts = json.load(f)
     # {"author", "content", "title"}
     res_dict = dict()
