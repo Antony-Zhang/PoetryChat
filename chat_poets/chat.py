@@ -1,17 +1,21 @@
 """
 生成回答
 """
+import os
 import json
 import re
 from LLM.spark_desk import SparkDesk
+from langchain.prompts import PromptTemplate, load_prompt
+from langchain.chains import LLMChain, SimpleSequentialChain
 
-from get_path import get_file_path
+from chat_poets.poet_web_search import search_poem
+from chat_poets.get_path import get_prompts_path
 
 
 class ChatPoet:
     llm = SparkDesk()
     # 记录所有Prompts的文件
-    with open(get_file_path("prompts.json", "prompts")) as f:
+    with open(get_prompts_path("prompts.json")) as f:
         prompts = json.load(f)
     # {"author", "content", "title"}
     res_dict = dict()
@@ -40,34 +44,74 @@ class ChatPoet:
     @classmethod
     def allow_chat(cls, user_message: str):
         """
-        对话开始时判断用户输入是否合规：提及诗人或古诗
+        对话开始时判断用户输入是否合规：提及诗人,诗名或诗句中的至少两个
         :param user_message:用户的问题
         """
+        count = 0
         prompt_allow = cls.prompts["allow_chat"].format(user_message=user_message)
         print(f"prompt_allow:{prompt_allow}")
         while True:
             try:
                 res_json_str = cls.llm(prompt_allow)
-                print(f"allow_chat: {res_json_str}")
-                cls.res_dict = json.loads(res_json_str)
+                start_index = res_json_str.find('{')
+                end_index = res_json_str.rfind('}') + 1
+                json_content = res_json_str[start_index:end_index]
+                cls.res_dict = json.loads(json_content)
                 break
             except:
+                print("allow_chat error: 大模型没有正确输出json格式")
                 continue
+
         while True:
             try:
-                cls.res_dict["exist"] = int(cls.res_dict["exist"])
-                if cls.res_dict["author"] is None:
-                    cls.res_dict["author"] = ""
-                if cls.res_dict["poem"] is None:
-                    cls.res_dict["poem"] = ""
-                print(f"res_dict:{cls.res_dict}")
-                return
+                # 计数器
+                for field in ["author", "title", "content"]:
+                    if cls.res_dict.get(field):
+                        count += 1
+
+                # 判断用户输入是否合规（提及至少两个字段）
+                if count >= 2:
+                    # print(f"用户输入合规，开始后续对话")
+                    break
+                else:
+                    # print("用户输入不合规，缺少足够的关键字段。")
+                    print("可以告诉小框更多关于这首诗的信息吗~~小框我作为古诗学习助手的目标是针对特定的古诗和你一起探讨，交流和进步！")
+                    # 重新提问
+                    prompt_allow = cls.prompts["allow_chat"].format(user_message=user_message)
+                    print(f"prompt_allow:{prompt_allow}")
+                    res_json_str = cls.llm(prompt_allow)
+                    start_index = res_json_str.find('{')
+                    end_index = res_json_str.rfind('}') + 1
+                    json_content = res_json_str[start_index:end_index]
+                    cls.res_dict = json.loads(json_content)
+                    count = 0
             except ValueError:
-                prompt_allow = cls.prompts["allow_chat"].format(user_message=user_message)
-                print(prompt_allow)
-                res_json_str = cls.llm(prompt_allow)
-                print(f"allow_chat: {res_json_str}")
-                cls.res_dict = json.loads(res_json_str)
+                pass
+
+
+        # while True:
+        #     try:
+        #         res_json_str = cls.llm(prompt_allow)
+        #         print(f"allow_chat: {res_json_str}")
+        #         cls.res_dict = json.loads(res_json_str)
+        #         break
+        #     except:
+        #         continue
+        # while True:
+        #     try:
+        #         cls.res_dict["exist"] = int(cls.res_dict["exist"])
+        #         if cls.res_dict["author"] is None:
+        #             cls.res_dict["author"] = ""
+        #         if cls.res_dict["poem"] is None:
+        #             cls.res_dict["poem"] = ""
+        #         print(f"res_dict:{cls.res_dict}")
+        #         return
+        #     except ValueError:
+        #         prompt_allow = cls.prompts["allow_chat"].format(user_message=user_message)
+        #         print(prompt_allow)
+        #         res_json_str = cls.llm(prompt_allow)
+        #         print(f"allow_chat: {res_json_str}")
+        #         cls.res_dict = json.loads(res_json_str)
 
     @classmethod
     def stop_chat(cls):
@@ -246,6 +290,5 @@ class ChatPoet:
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
         return str_response
 
-
 # if __name__ == '__main__':
-    # ChatPoet.allow_chat("你知道《静夜思》这首诗吗？")
+# ChatPoet.allow_chat("你知道《静夜思》这首诗吗？")
