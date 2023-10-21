@@ -5,6 +5,7 @@ import gradio as gr
 from chat_poets.chat import ChatPoet
 from gradio_ui.gr_chat import chat_poetry
 from txt2img.txt2img import gen_img
+from chat_poets.chat import ChatPoet
 
 
 def change_content():
@@ -36,7 +37,7 @@ with gr.Blocks() as demo:
             # txt_img = gr.State("txt_img")
             image_out = gr.Image(shape=(300, 700))
             image_button = gr.Button("点击生图")
-            # change_button = gr.Button("change")
+            change_button = gr.Button("change")
             txt_img = gr.Textbox(
                 show_label=False,
                 placeholder="请输入用于生图的诗句吧～",
@@ -45,7 +46,7 @@ with gr.Blocks() as demo:
 
             # radio.change(lambda s: s, inputs=radio, outputs=txt_img)  # 监听函数
             image_button.click(gen_img, inputs=txt_img, outputs=image_out)  # 生图函数
-            # change_button.click(change_content, outputs=txt_img)  # 测试按钮
+            change_button.click(ChatPoet.change_content, outputs=txt_img)  # 测试按钮
 
 demo.queue()
 demo.launch()
