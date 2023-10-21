@@ -4,7 +4,7 @@ import faiss
 from transformers import AutoTokenizer, AutoModel
 
 
-def poet_db_search(txt):
+def search_poet_db(txt):
     # 检查GPU可用性并设置设备
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -72,6 +72,6 @@ def poet_db_search(txt):
 
 
 if __name__ == '__main__':
-    knowledge = poet_db_search("苏轼的定风波真的好看吗")
+    knowledge = search_poet_db("苏轼的定风波真的好看吗")
     print((knowledge[0]["content"]).strip())
 

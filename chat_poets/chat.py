@@ -7,15 +7,16 @@ import re
 from LLM.spark_desk import SparkDesk
 from langchain.prompts import PromptTemplate, load_prompt
 from langchain.chains import LLMChain, SimpleSequentialChain
+from poet_db_search import search_poet_db
 
 from chat_poets.poet_web_search import search_poem
-from chat_poets.get_path import get_prompts_path
+from get_path import get_file_path
 
 
 class ChatPoet:
     llm = SparkDesk()
     # 记录所有Prompts的文件
-    with open(get_prompts_path("prompts.json")) as f:
+    with open(get_file_path("prompts.json", "prompts")) as f:
         prompts = json.load(f)
     # {"author", "content", "title"}
     res_dict = dict()
@@ -38,8 +39,14 @@ class ChatPoet:
 
             print(ChatPoet.sentence_choices)
 
-    # def change_content(self, new_content):
-    #     self.content = new_content
+    @classmethod
+    def change_content(cls):
+        """测试用"""
+        cls.content = "床前明月光，疑是地上霜。举头望明月，低头思故乡。"
+        print(cls.content)
+        return cls.content
+
+
 
     @classmethod
     def allow_chat(cls, user_message: str):
@@ -71,7 +78,13 @@ class ChatPoet:
 
                 # 判断用户输入是否合规（提及至少两个字段）
                 if count >= 2:
+                    res = ""
                     # print(f"用户输入合规，开始后续对话")
+                    for field in ["author", "title", "content"]:
+                        res += field
+                    knowledge = search_poet_db(res)
+                    cls.content = (knowledge[0]["content"]).strip()  # todo 待测试
+
                     break
                 else:
                     # print("用户输入不合规，缺少足够的关键字段。")
@@ -112,6 +125,7 @@ class ChatPoet:
         #         res_json_str = cls.llm(prompt_allow)
         #         print(f"allow_chat: {res_json_str}")
         #         cls.res_dict = json.loads(res_json_str)
+
 
     @classmethod
     def stop_chat(cls):
@@ -184,9 +198,9 @@ class ChatPoet:
         :param history: 对话记录，最后一项是[Question, ]，即答案待给出
         :return: 给出答案
         """
-        if question_type == "诗词原文":
-            return cls.get_str_response_origin(history)
-        elif question_type == "诗词白话文翻译":
+        # if question_type == "诗词原文":
+        #     return cls.get_str_response_origin(history)
+        if question_type == "诗词白话文翻译":
             return cls.get_str_response_vernacular(history)
         elif question_type == "诗词鉴赏":
             return cls.get_str_response_appreciate(history)
@@ -208,9 +222,9 @@ class ChatPoet:
         """
         prompt_mode = cls.prompts["pattern"][pattern]
 
-        if question_type == "诗词原文":
-            return cls.get_str_response_origin(history)
-        elif question_type == "诗词白话文翻译":
+        # if question_type == "诗词原文":
+        #     return cls.get_str_response_origin(history)
+        if question_type == "诗词白话文翻译":
             str_prompt_vernacular_s = prompt_mode + cls.get_str_response_vernacular(history)
             return cls.llm(str_prompt_vernacular_s)
         elif question_type == "诗词鉴赏":
@@ -226,24 +240,22 @@ class ChatPoet:
             str_prompt_background_s = prompt_mode + cls.get_str_response_background(history)
             return cls.llm(str_prompt_background_s)
 
-    @classmethod
-    def get_str_response_origin(cls, history: list[list]) -> str:
-        """古诗原文"""
-        print(f"res_dict:{cls.res_dict}")
-        print("----古诗原文----")
-        str_prompt = cls.get_str_history(history=history) + \
-                     cls.prompts["questions_type"]["origin"].format(author=cls.res_dict["author"],
-                                                                    poem=cls.res_dict["poem"])
-        str_response = cls.llm(str_prompt)
-        return str_response
+    # @classmethod
+    # def get_str_response_origin(cls, history: list[list]) -> str:
+    #     """古诗原文"""
+    #     print(f"res_dict:{cls.res_dict}")
+    #     print("----古诗原文----")
+    #     str_prompt = cls.get_str_history(history=history) + \
+    #                  cls.prompts["questions_type"]["origin"].format(author=cls.res_dict["author"],
+    #                                                                 poem=cls.res_dict["poem"])
+    #     str_response = cls.llm(str_prompt)
+    #     return str_response
 
     @classmethod
     def get_str_response_vernacular(cls, history: list[list]) -> str:
         """古诗白话文翻译"""
         print(" ----古诗白话文翻译 ----")
-        str_prompt = cls.prompts["questions_type"]["vernacular"].format(author=cls.res_dict["author"],
-                                                                        poem=cls.res_dict["poem"]) + \
-                     cls.get_str_response_origin(history=history)
+        str_prompt = cls.prompts["questions_type"]["vernacular"].format(content=cls.content)  # get_str_response_origin(history=history)
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
         return str_response
 
@@ -251,9 +263,7 @@ class ChatPoet:
     def get_str_response_appreciate(cls, history: list[list]) -> str:
         """古诗鉴赏"""
         print(" ----古诗鉴赏 ----")
-        str_prompt = cls.prompts["questions_type"]["appreciate"].format(author=cls.res_dict["author"],
-                                                                        poem=cls.res_dict["poem"]) + \
-                     cls.get_str_response_origin(history=history)
+        str_prompt = cls.prompts["questions_type"]["appreciate"].format(content=cls.content)  # get_str_response_origin(history=history)
         print(f"该问题的最终Prompt（除历史记录）：{str_prompt}")
 
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
@@ -263,11 +273,8 @@ class ChatPoet:
     def get_str_response_vocab(cls, history: list[list]) -> str:
         """词语解释"""
         print(" ----词语解释 ----")
-        str_prompt = cls.prompts["questions_type"]["vocab"].format(author=cls.res_dict["author"],
-                                                                   poem=cls.res_dict["poem"],
-                                                                   word="需要解释的词语",  # todo 这是个啥
-                                                                   response_origin=cls.get_str_response_origin(
-                                                                       history=history))
+        str_prompt = cls.prompts["questions_type"]["vocab"].format(word="需要解释的词语",  # todo 这是个啥
+                                                                   content=cls.content)
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
         return str_response
 
@@ -275,7 +282,7 @@ class ChatPoet:
     def get_str_response_author(cls, history: list[list]) -> str:
         """作者简介"""
         print(" ----作者简介 ----")
-        str_prompt = cls.prompts["questions_type"]["author"].format(author=cls.res_dict["poem"])
+        str_prompt = cls.prompts["questions_type"]["author"].format(author=cls.res_dict["author"])
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
         return str_response
 
@@ -284,9 +291,8 @@ class ChatPoet:
         """写作背景"""
         print(" ----写作背景 ----")
         str_prompt = cls.prompts["questions_type"]["background"].format(author=cls.res_dict["author"],
-                                                                        poem=cls.res_dict["poem"],
-                                                                        response_origin=cls.get_str_response_origin(
-                                                                            history=history))
+                                                                        title=cls.res_dict["title"],
+                                                                        content=cls.content)
         str_response = cls.llm(cls.get_str_history(history=history) + str_prompt)
         return str_response
 
