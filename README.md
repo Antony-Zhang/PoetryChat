@@ -37,12 +37,12 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
   - poet_search：实时检索古诗信息（古诗文网）
 - gradio_ui
   - gr_chat：🌟使用gradio搭建demo的模块
-- gushiwen_vector_database：🌛向量知识库【已跑通验证，需要进一步处理】
+- gushiwen_vector_database：🌟向量知识库【已跑通验证，需要进一步处理】
   - gushiwen.json 古诗文数据
   - search_vectors.py：计算向量并获得相似文本
   - local_vectors：向量化的数据文件
   - embedding_model：下载的模型【未附上】
-- txt2img：🌛文生图的模块
+- txt2img：🌟文生图的模块
 
 ### 其他
 - LLM： 与星火交互的功能封装
