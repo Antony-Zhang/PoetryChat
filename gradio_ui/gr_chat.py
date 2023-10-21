@@ -15,25 +15,25 @@ def chat_poetry(tab: gr.Tab):
     """
     pattern = gr.Markdown(f"{tab.id}")
     action = gr.State(value=False)  # 指示有效对话是否开始（开始时用户未提及古诗诗人则未进入）
-    with gr.Row():
-        # todo 历史记录
-        with gr.Column(scale=2):
-            gr.Markdown("## 历史记录")
-            chat_history = gr.State([[]])  # 存储单次聊天记录的组件
-        # 交互界面
-        with gr.Column(scale=8):
-            gr.Markdown("## 交互界面")
-            # 聊天
-            bot = gr.Chatbot(value=[(None, "今天想学哪首古诗？或是想了解哪位诗人呢？")], label="古诗学习助手",
-                             elem_id=f"{tab.id}_chatbot").style(height=400)
-            # 输入框
-            with gr.Row():
-                textbox = gr.Textbox(
-                    show_label=False,
-                    placeholder="Enter text and press enter",
-                )
-            # 按钮（New Chat） —— 清空交互界面、聊天记录与输入框
-            button_newchat = gr.Button(value="刷新聊天")  # NewChatButton(components=, value="New Chat")
+    # with gr.Row():
+    # # todo 历史记录
+    # with gr.Column(scale=2):
+    #     gr.Markdown("## 历史记录")
+    # 交互界面
+    with gr.Column():
+        gr.Markdown("## 交互界面")
+        chat_history = gr.State([[]])  # 存储单次聊天记录的组件
+        # 聊天
+        bot = gr.Chatbot(value=[(None, "今天想学哪首古诗？或是想了解哪位诗人呢？")], label="古诗学习助手",
+                         elem_id=f"{tab.id}_chatbot").style(height=400)
+        # 输入框
+        with gr.Row():
+            textbox = gr.Textbox(
+                show_label=False,
+                placeholder="Enter text and press enter",
+            )
+        # 按钮（New Chat） —— 清空交互界面、聊天记录与输入框
+        button_newchat = gr.Button(value="刷新聊天")  # NewChatButton(components=, value="New Chat")
 
     """模块功能"""
     # 输入框 提交
@@ -75,7 +75,7 @@ def chat_user(user_message: str, history: list[list], action: bool):
         allowed = False
         if (action is True) or (ChatPoet.res_dict != {}) and (ChatPoet.res_dict["exist"]):
             print(f"action is True: {action is True}")
-            print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {}}")
+            print(f"ChatPoet.res_dict: {ChatPoet.res_dict == {} }")
             allowed = True
 
     history += [[user_message, None]]
