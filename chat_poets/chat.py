@@ -2,6 +2,7 @@
 生成回答
 """
 import json
+import re
 from LLM.spark_desk import SparkDesk
 
 from get_path import get_file_path
@@ -12,8 +13,29 @@ class ChatPoet:
     # 记录所有Prompts的文件
     with open(get_file_path("prompts.json", "prompts")) as f:
         prompts = json.load(f)
-    # 记录单轮有效对话的关键内容（是否有效、诗人、古诗）——{"exist": int, "author": str, "poem": str}
+    # {"author", "content", "title"}
     res_dict = dict()
+
+    sentence_choices = ["枯藤老树昏鸦", "小桥流水人家", "古道西风瘦马"]
+
+    content = " "  # 当前的古诗内容
+
+    @property
+    def content(self):
+        return ChatPoet.content
+
+    @content.setter
+    def content(self, new_content):
+        if new_content != ChatPoet.content:
+            print("解析到的诗句已更改！")
+            ChatPoet.content = new_content
+            ChatPoet.sentence_choices =  [item for item in re.split(r'[。？！；]', new_content) if re.search(r'[\u4e00-\u9fa5]', item)]
+            # re.split(r'[。？！；]', new_content)
+
+            print(ChatPoet.sentence_choices)
+
+    # def change_content(self, new_content):
+    #     self.content = new_content
 
     @classmethod
     def allow_chat(cls, user_message: str):
