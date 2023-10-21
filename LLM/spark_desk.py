@@ -30,16 +30,16 @@ class SparkDesk(LLM):
 
     url = "wss://spark-api.xf-yun.com/v1.1/chat"
 
-    # # 本地调试时使用，加载.env文件
-    # load_dotenv(find_dotenv('.env'))
-    # APPID = os.getenv("APPID")      # 环境变量
+    # 本地调试时使用，加载.env文件
+    load_dotenv(find_dotenv('.env'))
+    APPID = os.getenv("APPID_LLM")      # 环境变量
+    APIKey = os.getenv("APIKEY_LLM")
+    APISecret = os.getenv("APISECRET_LLM")
+
+    # # HF部署时使用，直接加载Hub上设置的环境变量
+    # APPID = os.environ.get("APPID")
     # APIKey = os.getenv("APIKEY")
     # APISecret = os.getenv("APISECRET")
-
-    # HF部署时使用，直接加载Hub上设置的环境变量
-    APPID = os.environ.get("APPID")
-    APIKey = os.getenv("APIKEY")
-    APISecret = os.getenv("APISECRET")
 
     @property
     def _llm_type(self) -> str:
