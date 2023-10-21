@@ -1,20 +1,16 @@
 """
 生成回答
 """
-import os
 import json
 from LLM.spark_desk import SparkDesk
-from langchain.prompts import PromptTemplate, load_prompt
-from langchain.chains import LLMChain, SimpleSequentialChain
 
-from chat_poets.poet_search import search_poem
-from chat_poets.get_path import get_prompts_path
+from get_path import get_file_path
 
 
 class ChatPoet:
     llm = SparkDesk()
     # 记录所有Prompts的文件
-    with open(get_prompts_path("prompts.json")) as f:
+    with open(get_file_path("prompts.json", "prompts")) as f:
         prompts = json.load(f)
     # 记录单轮有效对话的关键内容（是否有效、诗人、古诗）——{"exist": int, "author": str, "poem": str}
     res_dict = dict()

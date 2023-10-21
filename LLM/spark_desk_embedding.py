@@ -11,9 +11,9 @@ class SparkDeskEmbedding(object):
     讯飞星火的Embedding模型
     """
     url = r'https://knowledge-retrieval.cn-huabei-1.xf-yun.com/v1/aiui/embedding/query'
-    APPID: str = os.getenv("APPID")
-    APIKey: str = os.getenv("APIKEY")
-    APISecret: str = os.getenv("APISECRET")
+    APPID: str = os.getenv("APPID_EMBEDDING")
+    APIKey: str = os.getenv("APIKEY_EMBEDDING")
+    APISecret: str = os.getenv("APISECRET_EMBEDDING")
 
     def _get_param(self, text) -> Mapping[str, Any]:
         """
