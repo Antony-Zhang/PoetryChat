@@ -18,7 +18,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 ---
 
 ## Todo
-- [ ] 更新SparkDesk调用方式，同步支持多种llm
+- [x] 更新SparkDesk调用方式，同步支持多种llm
 - [ ] 向量数据库的RAG检索召回功能完善
 - [ ] 接入Stable Diffusion文生图
 - [ ] 重构设计Agent逻辑，意图识别+调用工具
@@ -26,14 +26,16 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ## 调试说明
 
-**`app.py`**文件的main函数为项目的入口
+**`app.py`** 文件的 `main` 函数为项目的入口
 
 ## 结构说明
 `pass`
 
 ### 开发模块
 🌟表示核心模块，🌛表示尚未使用或计划优化的模块
+
 `pass`
+
 ### 其他
 `pass`
 
