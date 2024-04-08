@@ -6,3 +6,6 @@ gradio==4.25.0
 pillow==10.3.0
 numpy==1.26.4
 beautifulsoup4==4.12.3
+pydantic==2.6.4
+openai==1.16.2
+zhipuai==2.0.1
