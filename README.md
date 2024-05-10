@@ -50,4 +50,5 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 - langchain-0.1.14
 - gradio-4.25.0
 - python-dotenv
+- appbuilder-sdk-0.7.0
 

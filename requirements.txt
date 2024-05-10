@@ -9,3 +9,4 @@ beautifulsoup4==4.12.3
 pydantic==2.6.4
 openai==1.16.2
 zhipuai==2.0.1
+appbuilder-sdk==0.7.0
