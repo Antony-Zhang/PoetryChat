@@ -6,7 +6,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 # 配置密钥与应用ID
 appbuilder_token = os.environ['APPBUILDER_TOKEN']
-appbuilder_appid = os.environ['APPBUILDER_APPID']
+appbuilder_appid = os.environ['APPBUILDER_APPID_DEFAULT']
 
 # 初始化应用
 builder = appbuilder.AppBuilderClient(appbuilder_appid)
