@@ -11,18 +11,18 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 # 如果你需要通过代理端口访问，你需要如下配置
-os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
-os.environ["HTTP_PROXY"] = 'http://127.0.0.1:7890'
+# os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
+# os.environ["HTTP_PROXY"] = 'http://127.0.0.1:7890'
 
 # 获取环境变量 OPENAI_API_KEY 并实例化 OpenAI
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'], base_url=os.environ['OPENAI_BASE_URL'])
 
 
 # 一个封装 OpenAI 接口的函数，参数为 Prompt，返回对应结果
-def get_completion_openai(prompt, model="gpt-3.5-turbo", temperature=0.1):
+def get_completion_openai(prompt, model="gpt-4o", temperature=0.1):
     """
     prompt: 对应的提示词
-    model: 调用的模型，默认为 gpt-3.5-turbo，也可以选择 gpt-4
+    model: 调用的模型，默认为 gpt-3.5-turbo，也可以选择 gpt-3.5-turbo-16k 或 gpt-4 或 gpt-4o
     """
 
     # 构造消息

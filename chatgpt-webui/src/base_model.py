@@ -70,6 +70,7 @@ class ModelType(Enum):
     Claude = 4
     Qwen = 5
     LLaMA = 6
+    AppBuilder = 7
 
     @classmethod
     def get_type(cls, model_name: str):
@@ -85,6 +86,8 @@ class ModelType(Enum):
             model_type = ModelType.ChatGLM
         elif "llama" in model_name_lower or "alpaca" in model_name_lower or "yi" in model_name_lower:
             model_type = ModelType.LLaMA
+        elif "appbuilder" in model_name_lower:
+            model_type = ModelType.AppBuilder
         else:
             model_type = ModelType.Unknown
         return model_type

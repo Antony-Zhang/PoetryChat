@@ -56,6 +56,10 @@ def get_model(
             logger.info(f"正在加载LLaMA模型: {model_name}")
             from src.llama import LLaMAClient
             model = LLaMAClient(model_name, user_name=user_name)
+        elif model_type == ModelType.AppBuilder:
+            logger.info(f"正在加载AppBuilder模型: {model_name}")
+            from src.appbuilder import AppBuilderClient
+            model = AppBuilderClient(model_name, user_name=user_name)
         elif model_type == ModelType.Unknown:
             raise ValueError(f"未知模型: {model_name}")
     except Exception as e:
