@@ -5,6 +5,7 @@ import os
 
 import commentjson as json
 import gradio as gr
+from config.config import config
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,7 +32,14 @@ class I18nAuto:
 i18n = I18nAuto()  # internationalization
 
 # ChatGPT 设置
-INITIAL_SYSTEM_PROMPT = "You are a helpful assistant."
+# INITIAL_SYSTEM_PROMPT = "You are a helpful assistant."
+POETRY_THEME_INFO = """静夜思
+唐·李白
+床前明月光，疑是地上霜。
+举头望明月，低头思故乡。"""
+INITIAL_SYSTEM_PROMPT = config.default_system_prompt
+CHILD_SYSTEM_PROMPT = config.child_system_prompt
+STUDENT_SYSTEM_PROMPT = config.student_system_prompt
 API_HOST = "api.openai.com"
 OPENAI_API_BASE = "https://api.openai.com/v1"
 CHAT_COMPLETION_URL = "https://api.openai.com/v1/chat/completions"
@@ -77,34 +85,34 @@ ONLINE_MODELS = [
     "gpt-3.5-turbo",
     "gpt-3.5-turbo-16k",
     "gpt-3.5-turbo-1106",
-    "gpt-4",
-    "gpt-4-32k",
-    "gpt-4-1106-preview",
-    "gpt-4-turbo-preview",
-    "gpt-4-vision-preview",
+    # "gpt-4",
+    # "gpt-4-32k",
+    # "gpt-4-1106-preview",
+    # "gpt-4-turbo-preview",
+    # "gpt-4-vision-preview",
 ]
 
 # 定义实际模型名称和别名的字典
 MODEL_ALIASES = {
-    "gpt-3.5-turbo": "AppBuilder-SDK",
-    "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k",
-    "gpt-3.5-turbo-1106": "gpt-3.5-turbo-1106",
-    "gpt-4": "gpt-4",
-    "gpt-4-32k": "gpt-4-32k",
-    "gpt-4-1106-preview": "gpt-4-1106-preview",
-    "gpt-4-turbo-preview": "gpt-4-turbo-preview",
-    "gpt-4-vision-preview": "gpt-4-vision-preview",
+    "gpt-3.5-turbo": "default",
+    "gpt-3.5-turbo-16k": "child",
+    "gpt-3.5-turbo-1106": "student",
+    # "gpt-4": "gpt-4",
+    # "gpt-4-32k": "gpt-4-32k",
+    # "gpt-4-1106-preview": "gpt-4-1106-preview",
+    # "gpt-4-turbo-preview": "gpt-4-turbo-preview",
+    # "gpt-4-vision-preview": "gpt-4-vision-preview",
 }
 
 MODEL_TOKEN_LIMIT = {
     "gpt-3.5-turbo": 4096,
     "gpt-3.5-turbo-16k": 16384,
     "gpt-3.5-turbo-1106": 16384,
-    "gpt-4": 8192,
-    "gpt-4-32k": 32768,
-    "gpt-4-1106-preview": 128000,
-    "gpt-4-turbo-preview": 128000,
-    "gpt-4-vision-preview": 128000,
+    # "gpt-4": 8192,
+    # "gpt-4-32k": 32768,
+    # "gpt-4-1106-preview": 128000,
+    # "gpt-4-turbo-preview": 128000,
+    # "gpt-4-vision-preview": 128000,
 }
 
 LOCAL_MODELS = {

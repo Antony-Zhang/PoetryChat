@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author:XuMing(xuming624@qq.com)
-@description:
-"""
 import gradio as gr
 from loguru import logger
 import appbuilder
@@ -53,7 +49,7 @@ from src.presets import (
     favicon_path,
     API_HOST,
     HISTORY_DIR,
-    assets_path,
+    assets_path, POETRY_THEME_INFO,
 )
 from src.utils import (
     delete_chat_history,
@@ -242,7 +238,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                     # 获取模型的别名列表
                     MODEL_ALIASES_LIST = list(MODEL_ALIASES.values())
                     DEFAULT_MODEL_ALIAS = MODEL_ALIASES["gpt-3.5-turbo"]
-                    
+
                     model_select_dropdown = gr.Dropdown(
                         label=i18n("选择模型"), choices=MODEL_ALIASES_LIST, multiselect=False, value=DEFAULT_MODEL_ALIAS,
                         interactive=True,
@@ -322,7 +318,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                     gr.HTML(get_html("close_btn.html").format(
                         obj="toolbox"), elem_classes="close-btn")
                 with gr.Tabs(elem_id="chuanhu-toolbox-tabs"):
-                    with gr.Tab(label=i18n("对话")):
+                    with gr.Tab(label=i18n("主题")):
                         with gr.Accordion(label=i18n("模型"), open=not HIDE_MY_KEY, visible=not HIDE_MY_KEY):
                             keyTxt = gr.Textbox(
                                 show_label=True,
@@ -342,18 +338,18 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                                     "**发送消息** 或 **提交key** 以显示额度"), elem_id="usage-display",
                                     elem_classes="insert-block", visible=show_api_billing)
                         gr.Markdown("---", elem_classes="hr-line", visible=not HIDE_MY_KEY)
-                        with gr.Accordion(label="Prompt", open=True):
+                        with gr.Accordion(label="讨论主题展示", open=True):
                             systemPromptTxt = gr.Textbox(
                                 show_label=True,
-                                placeholder=i18n("在这里输入System Prompt..."),
-                                label="System prompt",
-                                value=INITIAL_SYSTEM_PROMPT,
-                                lines=8
+                                placeholder=i18n("这里是大语言模型判断捕获的古诗词或文言文全文信息展示"),
+                                label="古诗词",
+                                value=POETRY_THEME_INFO,
+                                lines=15
                             )
                             retain_system_prompt_checkbox = gr.Checkbox(
-                                label=i18n("新建对话保留Prompt"), value=False, visible=True,
+                                label=i18n("新建对话但保留当前讨论主题"), value=False, visible=True,
                                 elem_classes="switch-checkbox")
-                            with gr.Accordion(label=i18n("加载Prompt模板"), open=False):
+                            with gr.Accordion(label=i18n("加载自定义讨论主题"), open=False):
                                 with gr.Column():
                                     with gr.Row():
                                         with gr.Column(scale=6):
@@ -379,19 +375,19 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                                                 container=False,
                                             )
                         gr.Markdown("---", elem_classes="hr-line")
-                        with gr.Accordion(label=i18n("知识库"), open=True, elem_id="gr-kb-accordion", visible=True):
+                        with gr.Accordion(label=i18n("智能图片生成"), open=True, elem_id="gr-kb-accordion", visible=True):
                             use_websearch_checkbox = gr.Checkbox(label=i18n(
                                 "使用在线搜索"), value=False, elem_classes="switch-checkbox", elem_id="gr-websearch-cb",
                                 visible=False)
-                            index_files = gr.Files(label=i18n(
-                                "上传"), type="file",
-                                file_types=[".pdf", ".docx", ".pptx", ".epub", ".xlsx", ".txt", "text", "image"],
-                                elem_id="upload-index-file")
-                            two_column = gr.Checkbox(label=i18n(
-                                "双栏pdf"), value=False)
-                            summarize_btn = gr.Button(i18n("总结"), visible=False)
+                            # 显示本地路径的图片
+                            with gr.Row():
+                                with gr.Column(scale=6):
+                                    pass
+                                with gr.Column(scale=1):
+                                    imageRefreshBtn = gr.Button(
+                                        i18n("🔄 重新生成"), elem_id="gr-image-refresh-btn")
 
-                    with gr.Tab(label=i18n("切换模式")):  # 将标题修改为“切换模式”
+                    with gr.Tab(label=i18n("模式")):  # 将标题修改为“切换模式”
                         gr.Markdown(i18n("# 选择运行模式 ⚙️"),
                                     elem_id="mode-selection-info")
                         with gr.Accordion(i18n("模式切换"), open=True):
@@ -626,7 +622,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
             chatbot,
             use_streaming_checkbox,
             use_websearch_checkbox,
-            index_files,
+            # index_files,
             language_select_dropdown,
         ],
         outputs=[chatbot, status_display],
@@ -687,24 +683,24 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
         **auto_name_chat_history_args)
     user_input.submit(**get_usage_args)
 
-    submitBtn.click(**transfer_input_args).then(
-        **chatgpt_predict_args, api_name="predict").then(
-        **end_outputing_args).then(
-        **auto_name_chat_history_args)
-    submitBtn.click(**get_usage_args)
-    index_files.upload(handle_file_upload, [current_model, index_files, chatbot, language_select_dropdown], [
-        index_files, chatbot, status_display])
-    summarize_btn.click(handle_summarize_index, [
-        current_model, index_files, chatbot, language_select_dropdown], [chatbot, status_display])
-    emptyBtn.click(
-        reset,
-        inputs=[current_model, retain_system_prompt_checkbox],
-        outputs=[chatbot, status_display, historySelectList, systemPromptTxt, single_turn_checkbox, temperature_slider,
-                 top_p_slider, n_choices_slider, stop_sequence_txt, max_context_length_slider, max_generation_slider,
-                 presence_penalty_slider, frequency_penalty_slider, logit_bias_txt, user_identifier_txt],
-        show_progress=True,
-        _js='(a,b)=>{return clearChatbot(a,b);}',
-    )
+    # submitBtn.click(**transfer_input_args).then(
+    #     **chatgpt_predict_args, api_name="predict").then(
+    #     **end_outputing_args).then(
+    #     **auto_name_chat_history_args)
+    # submitBtn.click(**get_usage_args)
+    # index_files.upload(handle_file_upload, [current_model, index_files, chatbot, language_select_dropdown], [
+    #     index_files, chatbot, status_display])
+    # summarize_btn.click(handle_summarize_index, [
+    #     current_model, index_files, chatbot, language_select_dropdown], [chatbot, status_display])
+    # emptyBtn.click(
+    #     reset,
+    #     inputs=[current_model, retain_system_prompt_checkbox],
+    #     outputs=[chatbot, status_display, historySelectList, systemPromptTxt, single_turn_checkbox, temperature_slider,
+    #              top_p_slider, n_choices_slider, stop_sequence_txt, max_context_length_slider, max_generation_slider,
+    #              presence_penalty_slider, frequency_penalty_slider, logit_bias_txt, user_identifier_txt],
+    #     show_progress=True,
+    #     _js='(a,b)=>{return clearChatbot(a,b);}',
+    # )
 
     retryBtn.click(**start_outputing_args).then(
         retry,
@@ -713,7 +709,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
             chatbot,
             use_streaming_checkbox,
             use_websearch_checkbox,
-            index_files,
+            # index_files,
             language_select_dropdown,
         ],
         [chatbot, status_display],
@@ -747,7 +743,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
         [status_display],
         show_progress=False
     )
-    two_column.change(update_doc_config, [two_column], None)
+    # two_column.change(update_doc_config, [two_column], None)
 
     # LLM Models
     keyTxt.change(set_key, [current_model, keyTxt], [

@@ -11,6 +11,9 @@ class Config:
         with open(config_file, 'r', encoding="utf-8") as f:
             config = json.load(f)
         self.system_prompt = config['system_prompt']
+        self.default_system_prompt = config['default_system_prompt']
+        self.child_system_prompt = config['child_system_prompt']
+        self.student_system_prompt = config['student_system_prompt']
         self.user_prompt = config['user_prompt']
         self.poet = config['poet']
 
@@ -20,5 +23,8 @@ config = Config(CONFIG_FILE_PATH)
 
 if __name__ == '__main__':
     print(config.system_prompt)
+    print(config.default_system_prompt)
+    print(config.child_system_prompt)
+    print(config.student_system_prompt)
     print(config.user_prompt)
     print(config.poet)
