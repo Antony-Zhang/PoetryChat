@@ -12,7 +12,7 @@
 
 <div align="center"><h2>Demonstration</h2></div>
 
-![image-20240527204109978](https://s2.loli.net/2024/06/14/s74SBZah1wGPeKW.png)
+![诗趣伴行](./docs/诗趣伴行.png)
 
 &emsp;&emsp;You can easily and directly experience the our demo online on `HuggingFace` now. Click here for Online Experience 👉 [PoetryChat - a Hugging Face Space by jjyaoao](https://huggingface.co/spaces/jjyaoao/poetryChat)
 
