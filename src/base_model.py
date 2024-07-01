@@ -30,7 +30,7 @@ from src.presets import (
     BILLING_NOT_APPLICABLE_MSG,
     NO_INPUT_MSG,
     HISTORY_DIR,
-    INITIAL_SYSTEM_PROMPT,
+    DEFAULT_SYSTEM_PROMPT,
     PROMPT_TEMPLATE,
     WEBSEARCH_PTOMPT_TEMPLATE,
 )
@@ -97,7 +97,7 @@ class BaseLLMModel:
     def __init__(
             self,
             model_name,
-            system_prompt=INITIAL_SYSTEM_PROMPT,
+            system_prompt=DEFAULT_SYSTEM_PROMPT,
             temperature=1.0,
             top_p=1.0,
             n_choices=1,

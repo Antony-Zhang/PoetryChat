@@ -543,12 +543,12 @@ def get_template_dropdown():
     return gr.Dropdown.update(choices=template_names)
 
 
-def get_template_content(templates, selection, original_system_prompt):
-    logger.debug(f"应用模板中，选择为{selection}，原始系统提示为{original_system_prompt}")
+def get_template_content(templates, selection, original_theme):
+    logger.debug(f"讨论主题中，选择为{selection}，原始主题为{original_theme}")
     try:
         return templates[selection]
     except:
-        return original_system_prompt
+        return original_theme
 
 
 def reset_textbox():

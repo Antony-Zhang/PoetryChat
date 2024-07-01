@@ -5,7 +5,7 @@ import os
 
 import commentjson as json
 import gradio as gr
-from config.config import config
+from prompt.prompt import prompt
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -37,10 +37,11 @@ POETRY_THEME_INFO = """静夜思
 唐·李白
 床前明月光，疑是地上霜。
 举头望明月，低头思故乡。"""
-# INITIAL_SYSTEM_PROMPT = config.default_system_prompt
-INITIAL_SYSTEM_PROMPT = config.child_system_prompt
-CHILD_SYSTEM_PROMPT = config.child_system_prompt
-STUDENT_SYSTEM_PROMPT = config.student_system_prompt
+# INITIAL_SYSTEM_PROMPT = prompt.default_system_prompt
+DEFAULT_SYSTEM_PROMPT = prompt.system_prompt
+CHILD_SYSTEM_PROMPT = prompt.child_system_prompt
+STUDENT_SYSTEM_PROMPT = prompt.student_system_prompt
+ADULT_SYSTEM_PROMPT = prompt.adult_system_prompt
 
 API_HOST = "api.openai.com"
 OPENAI_API_BASE = "https://api.openai.com/v1"
