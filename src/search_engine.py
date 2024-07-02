@@ -8,7 +8,7 @@ from loguru import logger
 
 # Search engine related. You don't really need to change this.
 BING_SEARCH_V7_ENDPOINT = "https://api.bing.microsoft.com/v7.0/search"
-BING_MKT = "en-US"
+BING_MKT = "zh-CN" # "en-US"
 GOOGLE_SEARCH_ENDPOINT = "https://customsearch.googleapis.com/customsearch/v1"
 SERPER_SEARCH_ENDPOINT = "https://google.serper.dev/search"
 SEARCHAPI_SEARCH_ENDPOINT = "https://www.searchapi.io/api/v1/search"
@@ -23,9 +23,12 @@ DEFAULT_SEARCH_ENGINE_TIMEOUT = 5
 
 def search_with_bing(query: str, subscription_key: str):
     """
-    Search with bing and return the contexts.
+    使用Bing搜索并返回结果
     """
-    params = {"q": query, "mkt": BING_MKT}
+    params = {
+        "q": query, 
+        "mkt": BING_MKT
+    }
     response = requests.get(
         BING_SEARCH_V7_ENDPOINT,
         headers={"Ocp-Apim-Subscription-Key": subscription_key},
@@ -46,7 +49,7 @@ def search_with_bing(query: str, subscription_key: str):
 
 def search_with_google(query: str, subscription_key: str, cx: str):
     """
-    Search with google and return the contexts.
+    使用Google搜索并返回结果
     """
     params = {
         "key": subscription_key,
@@ -71,7 +74,7 @@ def search_with_google(query: str, subscription_key: str, cx: str):
 
 def search_with_serper(query: str, subscription_key: str):
     """
-    Search with serper and return the contexts.
+    使用Serper搜索并返回结果
     """
     payload = json.dumps({
         "q": query,
@@ -128,7 +131,7 @@ def search_with_serper(query: str, subscription_key: str):
 
 def search_with_searchapi(query: str, subscription_key: str):
     """
-    Search with SearchApi.io and return the contexts.
+    使用SearchApi搜索并返回结果
     """
     payload = {
         "q": query,
@@ -219,12 +222,12 @@ def search_with_searchapi(query: str, subscription_key: str):
 
 def search_with_duckduckgo(query: str):
     """
-    Search with DuckDuckGo and return the contexts.
+    使用DuckDuckGo搜索并返回结果
     """
     try:
         from duckduckgo_search import DDGS
     except ImportError:
-        raise ImportError("Please install duckduckgo-search to use this search engine.")
+        logger.error("duckduckgo_search导入失败, 请使用pip安装")
     contexts = []
     with DDGS() as ddgs:
         ddgs_gen = ddgs.text(query, backend="lite")
@@ -235,3 +238,12 @@ def search_with_duckduckgo(query: str):
                 "snippet": r['body']
             })
     return contexts
+
+
+
+if __name__ == "__main__":
+    print("====DUCKDUCKGO=====")
+    print(search_with_duckduckgo("静夜思"))
+    print("====BING=====")
+    from config import bing_search_api_key
+    print(search_with_bing("静夜思", bing_search_api_key))

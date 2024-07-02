@@ -242,34 +242,33 @@ class BaseLLMModel:
             files, reply_language, chatbot,
             load_from_cache_if_possible=True,
     ):
+        '''使用上传文档或在线检索，结合用户问题组织输入'''
         display_append = []
         limited_context = False
         if type(real_inputs) == list:
             fake_inputs = real_inputs[0]["text"]
         else:
             fake_inputs = real_inputs
-        if files:
+        if files:           # 若用户上传文件，则进行索引
             from langchain.vectorstores.base import VectorStoreRetriever
-            from langchain.retrievers import BM25Retriever, EnsembleRetriever
+            from langchain.retrievers import BM25Retriever, EnsembleRetriever   # 导入检索器
             limited_context = True
-            msg = "加载索引中……"
-            logger.info(msg)
+            logger.info("加载索引中……")
             index, documents = construct_index(
                 self.api_key,
                 files=files,
                 load_from_cache_if_possible=load_from_cache_if_possible,
             )
             assert index is not None, "获取索引失败"
-            msg = "索引获取成功，生成回答中……"
-            logger.info(msg)
+            logger.info("索引获取成功，生成回答中……")
             file_text = " ".join([d.page_content for d in documents])
             file_text_token_limit = self.token_upper_limit / 2  # 文档的token上限为模型token上限的一半
             if self.count_token(file_text) > file_text_token_limit:
-                # 文档token数超限使用检索匹配，否则用知识库文件的全部数据做rag
+                    # 若文档token数超过上限，则使用检索匹配，否则用知识库文件的全部数据做RAG
                 with retrieve_proxy():
-                    if local_embedding:
-                        k = 3
-                        score_threshold = 0.4
+                    if local_embedding: # 使用本地向量
+                        k = 3                   # 检索文档数目
+                        score_threshold = 0.4   # 相似度阈值
                         vec_retriever = VectorStoreRetriever(
                             vectorstore=index,
                             search_type="similarity_score_threshold",
@@ -280,12 +279,14 @@ class BaseLLMModel:
                             preprocess_func=chinese_preprocessing_func
                         )
                         bm25_retriever.k = k
+                        # 同时使用VectorStoreRetriever和BM25Retriever，权重五五开
                         retriever = EnsembleRetriever(
                             retrievers=[bm25_retriever, vec_retriever],
                             weights=[0.5, 0.5],
                         )
-                    else:
-                        k = 5
+                    else:               # 非本地向量，
+                        k = 5                   # 检索文档数目
+                        # 只使用VectorStoreRetriever
                         retriever = VectorStoreRetriever(
                             vectorstore=index,
                             search_type="similarity",
@@ -302,7 +303,7 @@ class BaseLLMModel:
                             chatbot,
                             load_from_cache_if_possible=False,
                         )
-            else:
+            else:   # 若文档token未超上限，则直接利用所有文档
                 relevant_documents = documents
             reference_results = [
                 [d.page_content.strip("�"), os.path.basename(d.metadata["source"])]
@@ -311,6 +312,7 @@ class BaseLLMModel:
             reference_results = add_source_numbers(reference_results)
             display_append = add_details(reference_results)
             display_append = "\n\n" + "".join(display_append)
+            # 将文档与Prompt拼接，形成向LLM发送的真正输入
             if type(real_inputs) == list:
                 real_inputs[0]["text"] = (
                     replace_today(PROMPT_TEMPLATE)
@@ -325,7 +327,8 @@ class BaseLLMModel:
                     .replace("{context_str}", "\n\n".join(reference_results))
                     .replace("{reply_language}", reply_language)
                 )
-        elif use_websearch:
+
+        elif use_websearch: # 若使用Web搜索
             if websearch_engine == "google":
                 search_results = search_with_google(fake_inputs, google_search_api_key, google_search_cx)
             elif websearch_engine == "bing":
@@ -338,7 +341,7 @@ class BaseLLMModel:
                 search_results = search_with_duckduckgo(fake_inputs)
             reference_results = []
             for idx, result in enumerate(search_results):
-                logger.debug(f"搜索结果{idx + 1}：{result}")
+                logger.debug(f"搜索结果{idx + 1}: {result}")
                 reference_results.append([result["snippet"], result["url"]])
                 display_append.append(
                     f"<a href=\"{result['url']}\" target=\"_blank\">{idx + 1}.&nbsp;{result['name']}</a>"
@@ -347,6 +350,7 @@ class BaseLLMModel:
             display_append = (
                     '<div class = "source-a">' + "".join(display_append) + "</div>"
             )
+            # 将文档与Prompt拼接，形成向LLM发送的真正输入
             if type(real_inputs) == list:
                 real_inputs[0]["text"] = (
                     replace_today(WEBSEARCH_PTOMPT_TEMPLATE)
