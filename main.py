@@ -106,6 +106,7 @@ from src.utils import (
     transfer_input,
     handle_file_upload,
     handle_summarize_index,
+    update_image_text
 )
 
 from src.gen_image import image_generator
@@ -369,7 +370,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                             retain_system_prompt_checkbox = gr.Checkbox(
                                 label=i18n("新建对话保留当前讨论主题"), value=False, visible=True,
                                 elem_classes="switch-checkbox")
-                            with gr.Accordion(label=i18n("加载自定义讨论主题"), open=False):
+                            with gr.Accordion(label=i18n("加载自定义讨论主题"), open=True):
                                 with gr.Column():
                                     with gr.Row():
                                         with gr.Column(scale=6):
@@ -421,15 +422,11 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                         with gr.Accordion(i18n("生图"), open=True):
                             # gr.Markdown("## 智能图片生成🏞️")
                             # 添加文本输入框用于输入生成图片的文本
-                            image_output = gr.Image(label="古诗文意象图")
-                            text_input = gr.Textbox(label="描述", placeholder=i18n("输入'本地'可查看默认图片"))
+                            image_output = gr.Image(label="古诗文意象图", show_label=False)
+                            image_text = gr.Textbox(label="诗句", placeholder=i18n("输入'本地'可查看默认图片"))
                             generate_button = gr.Button("生成图片")
+                            generate_button.click(image_generator.generate_image, inputs=image_text, outputs=image_output)
                             
-                            # 绑定按钮点击事件
-                            # generate_button.click(generate_image, inputs=text_input, outputs=image_output)
-                            # 做一个假本地返回效果
-                            generate_button.click(image_generator.generate_image, inputs=text_input, outputs=image_output)
-  
                     
                     # with gr.Tab(label=i18n("参数")):
                         # gr.Markdown(i18n("# ⚠️ 务必谨慎更改 ⚠️"),
@@ -781,6 +778,10 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
         show_progress=False
     )
     two_column.change(update_doc_config, [two_column], None)
+
+    # 生图
+    theme.change(update_image_text, [theme], [image_text])
+
 
     # LLM Models
     keyTxt.change(set_key, [current_model, keyTxt], [

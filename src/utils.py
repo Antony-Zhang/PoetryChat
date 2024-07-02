@@ -550,6 +550,12 @@ def get_template_content(templates, selection, original_theme):
     except:
         return original_theme
 
+def update_image_text(theme):
+    ''' 根据讨论主题(原文)，更新生图描述 '''
+    image_text = theme
+    logger.debug("因主题变化，更新生图描述")
+    return image_text
+
 
 def reset_textbox():
     logger.debug("重置文本框")
