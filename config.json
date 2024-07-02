@@ -1,15 +1,16 @@
 {
-    "openai_api_key": "your-api",
+    "openai_api_key": "sk-wCtvywxzqFSvoYX30e499594Ee814425881b96C0459dF4Be",
+    "openai_api_base": "https://apikeyplus.com/v1",
     "language": "auto",
     "hide_history_when_not_logged_in": true,
-    "default_model": "gpt-3.5-turbo",
+    "default_model":  "gpt-3.5-turbo",  
     "multi_api_key": false,
     "server_name": "127.0.0.1",
     "server_port": 8010,
     "autobrowser": false,
     "share": false,
     "websearch_engine": "duckduckgo",
-    "sparkdesk_appid": ,
-    "sparkdesk_apisecret": ,
-    "sparkdesk_apikey": 
+    "sparkdesk_appid": "c96bdfdd",
+    "sparkdesk_apisecret": "M2Q3ZjllY2JlODE2MzlmNGYyYjVkZGRm",
+    "sparkdesk_apikey": "e0799f95d4cd84750874060b892943e0"
 }

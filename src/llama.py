@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author:XuMing(xuming624@qq.com)
-@description:
-
-int8 gptq model need: pip install optimum auto-gptq
-"""
 
 from loguru import logger
 

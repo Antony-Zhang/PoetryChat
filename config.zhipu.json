@@ -1,6 +1,6 @@
 {
     // "openai_api_key": "your-openai-key",
-    "openai_api_key": "your-zhipuai-key",//zhipuai api key
+    "openai_api_key": "b33941917972c5fa583e24e4ab734f72.87kdLFtzPmTCOJfD",//zhipuai api key
     "language": "auto",
     "local_embedding": true, 
     "hf_emb_model_name": "/home/jhx/Projects/WonderWhy/bge-m3/",
