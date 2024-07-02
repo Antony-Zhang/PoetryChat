@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author:XuMing(xuming624@qq.com)
-@description:
-"""
 import gradio as gr         # 用于构建Web界面
 from loguru import logger   # 用于日志记录
 import appbuilder           # 用于构建应用
@@ -112,6 +108,8 @@ from src.utils import (
     handle_summarize_index,
 )
 
+from src.gen_image import image_generator
+
 reg_patch()
 
 gr.Chatbot._postprocess_chat_messages = postprocess_chat_messages
@@ -122,6 +120,45 @@ os.environ["APPBUILDER_TOKEN"] = "bce-v3/ALTAK-QwuihwYsMjA5jBiIBVfJP/51f962e086e
 APPBUILDER_APPID_DEFAULT = "2ef66c07-b4ac-4fb7-adf9-a76b5c80b2b5"
 APPBUILDER_APPID_CHILD = "c2de7a91-e17e-4d31-becf-b5d014156de7"
 APPBUILDER_APPID_STUDENT = "93ea3085-0e79-40f0-8e3d-f47381af427a"
+
+
+
+# def respond(query, app_selection, chat_history):
+#     '''
+#     根据用户选择的模式和输入的文本，生成回复
+#     '''
+#     # 根据用户选择设置应用ID
+#     if app_selection == "成人模式":
+#         app_id = APPBUILDER_APPID_DEFAULT
+#     elif app_selection == "儿童模式":
+#         app_id = APPBUILDER_APPID_CHILD
+#     elif app_selection == "学生模式":
+#         app_id = APPBUILDER_APPID_STUDENT
+
+#     # 初始化应用
+#     builder = appbuilder.AppBuilderClient(app_id)
+
+#     # 创建会话ID
+#     conversation_id = builder.create_conversation()
+
+#     # 执行对话
+#     msg = builder.run(conversation_id, query)
+    
+#     chat_history.append((query, msg.content.answer))
+#     time.sleep(2)
+#     return "", chat_history
+
+# # 创建独立的模式切换模块
+# def mode_switch_ui():
+#     with gr.Tab(label=i18n("切换模式")):
+#         gr.Markdown(i18n("# 选择运行模式 ⚙️"), elem_id="mode-selection-info")
+#         with gr.Accordion(i18n("模式切换"), open=True):
+#             mode_selection = gr.Radio(
+#                 choices=["默认模式", "成人模式", "儿童模式", "学生模式"],
+#                 label=i18n("运行模式"),
+#                 value="默认模式"
+#             )
+#     return mode_selection
 
 def on_mode_change(mode, current_model):
     match(mode):
@@ -136,75 +173,7 @@ def on_mode_change(mode, current_model):
     current_model.set_system_prompt(prompt)  # 设置模型的Prompt
     return f"已选模式：{mode}\n ---\n Prompt:\n {prompt}"
 
-def generate_image_from_text(prompt, width=1024, height=1024, image_num=1):
-    import appbuilder
-    os.environ["APPBUILDER_TOKEN"] = "bce-v3/ALTAK-QwuihwYsMjA5jBiIBVfJP/51f962e086efb6f3a2332414360552bae5f3958d"
-    text2Image = appbuilder.Text2Image()
-    content_data = {"prompt": prompt, "width": width, "height": height, "image_num": image_num}
-    msg = appbuilder.Message(content_data)
-    out = text2Image.run(msg)
-    return out.content['img_urls']
-
-def generate_image(prompt):
-    img_urls = generate_image_from_text(prompt)
-    return img_urls[0]  # 假设只生成一张图片
-
-def generate_local_image(prompt):
-    '''模拟生成图片并保存到本地路径
-    在实际应用中，你需要调用你的图像生成函数并保存图像
-    这里我们假设生成的图像保存在 `generated_image.png`
-    '''
-    local_image_path = "generate_image.png"
-    
-    # 模拟生成图片保存
-    # 这里你可以替换为实际的图像生成逻辑
-    # from PIL import Image, ImageDraw, ImageFont
-    # image = Image.new('RGB', (1024, 1024), color = (73, 109, 137))
-    # d = ImageDraw.Draw(image)
-    # d.text((10,10), prompt, fill=(255,255,0))
-    # image.save(local_image_path)
-    time.sleep(6)
-    return local_image_path
-
-def respond(query, app_selection, chat_history):
-    '''
-    根据用户选择的模式和输入的文本，生成回复
-    '''
-    # 根据用户选择设置应用ID
-    if app_selection == "成人模式":
-        app_id = APPBUILDER_APPID_DEFAULT
-    elif app_selection == "儿童模式":
-        app_id = APPBUILDER_APPID_CHILD
-    elif app_selection == "学生模式":
-        app_id = APPBUILDER_APPID_STUDENT
-
-    # 初始化应用
-    builder = appbuilder.AppBuilderClient(app_id)
-
-    # 创建会话ID
-    conversation_id = builder.create_conversation()
-
-    # 执行对话
-    msg = builder.run(conversation_id, query)
-    
-    chat_history.append((query, msg.content.answer))
-    time.sleep(2)
-    return "", chat_history
-
-# # 创建独立的模式切换模块
-# def mode_switch_ui():
-#     with gr.Tab(label=i18n("切换模式")):
-#         gr.Markdown(i18n("# 选择运行模式 ⚙️"), elem_id="mode-selection-info")
-#         with gr.Accordion(i18n("模式切换"), open=True):
-#             mode_selection = gr.Radio(
-#                 choices=["默认模式", "成人模式", "儿童模式", "学生模式"],
-#                 label=i18n("运行模式"),
-#                 value="默认模式"
-#             )
-#     return mode_selection
-
-
-
+''' 构建Web界面 '''
 with gr.Blocks(theme=small_and_beautiful_theme) as demo:
     user_name = gr.Textbox("", visible=False)
     # 激活/logout路由
@@ -439,8 +408,8 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                             summarize_btn = gr.Button(i18n("总结"), visible=False)
 
                     with gr.Tab(label=i18n("模式")):  # 将标题修改为“模式”
-                        gr.Markdown(i18n("# 选择运行模式 ⚙️"),
-                                    elem_id="mode-selection-info")
+                        # gr.Markdown(i18n("## 选择运行模式⚙️"),
+                        #             elem_id="mode-selection-info")
                         with gr.Accordion(i18n("模式切换"), open=True):
                             mode_selection = gr.Radio(choices=["默认模式", "成人模式", "儿童模式", "学生模式"], label=i18n("运行模式"), value="默认模式")
                             submit_button = gr.Button(i18n("确认选择"))
@@ -448,16 +417,18 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                             submit_button.click(on_mode_change, 
                                                 inputs=[mode_selection, current_model], 
                                                 outputs=result)
-                        gr.Markdown("### 智能图片生成")
-                        # 添加文本输入框用于输入生成图片的文本
-                        image_output = gr.Image(label="古诗文意象图")
-                        text_input = gr.Textbox(label="你的描述")
-                        generate_button = gr.Button("生成图片")
-                        
-                        # 绑定按钮点击事件
-                        # generate_button.click(generate_image, inputs=text_input, outputs=image_output)
-                        # 做一个假本地返回效果
-                        generate_button.click(generate_local_image, inputs=text_input, outputs=image_output)
+                        gr.Markdown("---", elem_classes="hr-line")
+                        with gr.Accordion(i18n("生图"), open=True):
+                            # gr.Markdown("## 智能图片生成🏞️")
+                            # 添加文本输入框用于输入生成图片的文本
+                            image_output = gr.Image(label="古诗文意象图")
+                            text_input = gr.Textbox(label="描述", placeholder=i18n("输入'本地'可查看默认图片"))
+                            generate_button = gr.Button("生成图片")
+                            
+                            # 绑定按钮点击事件
+                            # generate_button.click(generate_image, inputs=text_input, outputs=image_output)
+                            # 做一个假本地返回效果
+                            generate_button.click(image_generator.generate_image, inputs=text_input, outputs=image_output)
   
                     
                     # with gr.Tab(label=i18n("参数")):
@@ -551,6 +522,7 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
                             lines=1,
                             visible=False
                         )
+
                     with gr.Tab(label=i18n("关于")):
                         gr.Markdown("#### " + i18n("PoetryChat Github地址"))
                         gr.Markdown(DESCRIPTION)
@@ -838,8 +810,8 @@ with gr.Blocks(theme=small_and_beautiful_theme) as demo:
     )
     templateSelectDropdown.change(
         get_template_content,
-        [promptTemplates, templateSelectDropdown, theme], # TODO 改为主题
-        [theme],  # TODO 改为主题  
+        [promptTemplates, templateSelectDropdown, theme], 
+        [theme],  
         show_progress=True,
     )
 

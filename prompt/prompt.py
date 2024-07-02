@@ -16,6 +16,7 @@ class Prompt:
         self.student_system_prompt = prompt['student_system_prompt']
         self.user_prompt = prompt['user_prompt']
         self.poet = prompt['poet']
+        self.image_prompt = prompt['image_prompt']  # 产生生图Prompt的Prompt
 
 
 # 创建一个Prompt实例

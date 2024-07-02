@@ -8,5 +8,8 @@
     "server_port": 8010,
     "autobrowser": false,
     "share": false,
-    "websearch_engine": "duckduckgo"
+    "websearch_engine": "duckduckgo",
+    "sparkdesk_appid": ,
+    "sparkdesk_apisecret": ,
+    "sparkdesk_apikey": 
 }

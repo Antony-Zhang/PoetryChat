@@ -18,6 +18,12 @@ if os.path.exists(config_file):
         config = json.load(f)
 if config:
     logger.info(f"加载配置文件成功, config: {config}")
+
+# SparkDesk 配置
+sparkdesk_appid = config.get("sparkdesk_appid")
+sparkdesk_apisecret = config.get("sparkdesk_apisecret")
+sparkdesk_apikey = config.get("sparkdesk_apikey")
+
 language = config.get("language", "") or os.environ.get("LANGUAGE", "auto")
 
 hide_history_when_not_logged_in = config.get("hide_history_when_not_logged_in", False)
