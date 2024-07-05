@@ -70,7 +70,14 @@ if __name__ == "__main__":
     #     print(a.generations[0][0].text)
     #     print(a.llm_output)
     
-    from src.gen_image import image_generator
-    desc = '''生成一张图：远处有着高山，山上覆盖着冰雪，近处有着一片湛蓝的湖泊'''
-    image_generator.generate_image(desc)
+    # from src.gen_image import image_generator
+    # desc = '''生成一张图：远处有着高山，山上覆盖着冰雪，近处有着一片湛蓝的湖泊'''
+    # image_generator.generate_image(desc)
 
+    from src.config import bing_search_api_key
+    from src.search_engine import search_with_bing
+    from src.search_engine import search_with_duckduckgo
+    print("====DUCKDUCKGO=====")
+    print(search_with_duckduckgo("静夜思"))
+    print("====BING=====")
+    print(search_with_bing("静夜思", bing_search_api_key))
