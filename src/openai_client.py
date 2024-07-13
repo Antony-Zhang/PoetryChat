@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author:XuMing(xuming624@qq.com)
-@description: 
-"""
 
 import base64
 import datetime
@@ -18,7 +14,7 @@ from loguru import logger
 from src import shared, config
 from src.base_model import BaseLLMModel
 from src.presets import (
-    INITIAL_SYSTEM_PROMPT,
+    DEFAULT_SYSTEM_PROMPT,
     TIMEOUT_ALL,
     TIMEOUT_STREAMING,
     STANDARD_ERROR_MSG,
@@ -81,7 +77,7 @@ class OpenAIClient(BaseLLMModel):
             self,
             model_name,
             api_key,
-            system_prompt=INITIAL_SYSTEM_PROMPT,
+            system_prompt=DEFAULT_SYSTEM_PROMPT,
             temperature=1.0,
             top_p=1.0,
             user_name="",
@@ -302,7 +298,7 @@ class OpenAIVisionClient(BaseLLMModel):
             self,
             model_name,
             api_key,
-            system_prompt=INITIAL_SYSTEM_PROMPT,
+            system_prompt=DEFAULT_SYSTEM_PROMPT,
             temperature=1.0,
             top_p=1.0,
             user_name=""

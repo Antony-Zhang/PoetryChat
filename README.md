@@ -20,19 +20,39 @@
 
 <div align="center"><h2>Todo</h2></div>
 
-- [ ] Complete the Gradio Interface and UI design
-- [ ] Add team members brief introduction
-- [ ] Add a gif demonstration
-- [ ] Deploy the demo on HuggingFace
-- [ ] RAG layer
-- [ ] LLM Agent layer
-- [ ] Application layer
+- P1
+    - [ ] Export picture "books" for children
+    - [ ] Export cards with poet and picture, for recitation
+    - [ ] Export map-liked records for parent-child interaction
+    - [ ] Test and exsercise for students
+- P2
+    - [ ] Complete the Gradio Interface and UI design
+    - [ ] Add team members brief introduction
+    - [ ] Add a gif demonstration
+    - [ ] Deploy the demo on HuggingFace
+    - [ ] RAG layer
+    - [ ] LLM Agent layer
+    - [ ] Application layer
+
+</div>
 
 
+<div>
+    <div align="center"><h2>Development Logs</h2></div>
+
+> Remember to update the `README.md` and `requirements.txt` after each commit!
+
+- [2024-07-05] Historic Talk! 
 
 
 
 </div>
+
+
+
+
+
+
 
 <div align="center"><h2>Quick Start</h2></div>
 
@@ -60,11 +80,18 @@ $ pip install -r requirements.txt
     <summary><h4>Preparation</h4></summary>
 
 
-&emsp;&emsp;1. open `.env.example` and fill your own `API Keys` in the **corresponding place** if you want to use certain LLM, then **rename** the file into `.env`
+&emsp;&emsp;1. open `config_example.json` and fill your own `API Keys` in the **corresponding place** if you want to use certain LLM, then **rename** the file into `config.json`
 
-```
-OPENAI_API_KEY = ""
-OPENAI_URL_BASE = ""
+```json
+// Openai
+"openai_api_key": "",
+"openai_api_base": "",
+// Spark Desk
+"sparkdesk_apisecret": "",
+"sparkdesk_apikey": "",
+"sparkdesk_appid": "",
+// Bing
+"bing_search_api_key": ""
 ```
 
 &emsp;&emsp;2. xxx
